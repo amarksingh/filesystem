@@ -58,7 +58,7 @@ class Azure extends CoreAdapter {
             .then(response => ({ error: null, response }))
             .catch(error => Promise.resolve({ error, response: null }))
             .then(({ error, response }) => {
-                if (typeof this[kHandler].read == 'function') {
+                if (typeof this[kHandler].write == 'function') {
                     this[kHandler].write({
                         path: $path,
                         options,

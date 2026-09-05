@@ -66,6 +66,7 @@ class CoreAdapter {
     }
 
     write($path, $contents, options = {}, ...rest) {
+        let callback = Array.from(rest).find(arg => typeof arg == "function") || (typeof options == "function" ? options : () => {});
         callback(this.formatError({ message: 'there was no such functionality available.' }), {})
 
     }

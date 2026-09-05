@@ -1,3 +1,4 @@
+const util = require('util');
 require('@ostro/support/helpers')
 const Manager = require('@ostro/support/manager')
 const InvalidArgumentException = require('./invalidArgumentException')
@@ -11,15 +12,20 @@ class FileSystemManager extends Manager {
     constructor($app) {
         super($app)
         this[kHandler] = this.getConfig('handler')
-        if (typeof this[kHandler] != 'function' || typeof this[kHandler] != 'object') {
-            this[kHandler] = callbackHandler
-        } else if (typeof this[kHandler] != 'object') {
-            this[kHandler] = this[kHandler].constructor
-            util.inherits(this[kHandler], callbackHandler)
-        } else {
-            util.inherits(this[kHandler], callbackHandler)
+        if (!this[kHandler]) {
+            this[kHandler] = new callbackHandler();
+        } else if (typeof this[kHandler] == 'function') {
+            util.inherits(this[kHandler], callbackHandler);
+            this[kHandler] = new this[kHandler]();
+        } else if (typeof this[kHandler] == 'object') {
+            let HandlerClass = this[kHandler].constructor;
+            if (HandlerClass && HandlerClass !== Object) {
+                util.inherits(HandlerClass, callbackHandler);
+                this[kHandler] = Object.assign(new HandlerClass(), this[kHandler]);
+            } else {
+                this[kHandler] = Object.assign(new callbackHandler(), this[kHandler]);
+            }
         }
-        this[kHandler] = new this[kHandler]
     }
 
     drive($name = null) {
@@ -38,7 +44,7 @@ class FileSystemManager extends Manager {
     resolve($name) {
         var $config = this.getConfig($name);
         if (!$config) {
-            throw new InvalidArgumentException("Disk [{" + $name + "}] was not available.");
+            throw new InvalidArgumentException("Disk [" + $name + "] was not available.");
         }
         return super.resolve($name, $config)
     }
@@ -61,7 +67,7 @@ class FileSystemManager extends Manager {
     }
 
     getConfig(name) {
-        return super.getConfig(`disks.${name}`);
+        return super.getConfig(`disks.${name}`) || super.getConfig(name);
     }
 
     getDefaultCloudDriver() {
@@ -70,14 +76,16 @@ class FileSystemManager extends Manager {
 
     registerToRequest(FileRequest) {
         let self = this
-        FileRequest.prototype.store = function(dir = '', disk = '', options = {}) {
-            options = typeof disk == 'object' ? disk : options
-            disk = typeof disk == 'object' ? '' : disk
+        FileRequest.prototype.store = function(dir, disk, options) {
+            dir = dir || '';
+            options = typeof disk == 'object' ? disk : (options || {});
+            disk = typeof disk == 'object' ? '' : (disk || '');
             return self.disk((disk || self.getDefaultDriver())).putFile(dir, this, options)
         }
-        FileRequest.prototype.storeAs = function(dir = '', filename, disk = '', options = {}) {
-            options = typeof disk == 'object' ? disk : options
-            disk = typeof disk == 'object' ? '' : disk
+        FileRequest.prototype.storeAs = function(dir, filename, disk, options) {
+            dir = dir || '';
+            options = typeof disk == 'object' ? disk : (options || {});
+            disk = typeof disk == 'object' ? '' : (disk || '');
             return self.disk((disk || self.getDefaultDriver())).putFileAs(dir, this, filename, options)
         }
 

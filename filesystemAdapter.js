@@ -21,7 +21,10 @@ class FilesystemAdapter {
     }
 
     path($path) {
-        return this[kAdapter].getAdapter().getPathPrefix().$path;
+        if (typeof this[kAdapter].applyPathPrefix == "function") {
+            return this[kAdapter].applyPathPrefix($path);
+        }
+        return this[kAdapter].getAdapter().getPathPrefix()[$path];
     }
 
     get($path, options) {

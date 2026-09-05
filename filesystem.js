@@ -12,8 +12,8 @@ class Filesystem extends FilesystemContract {
         return fs.access($path).then(res => true).catch(err => Promise.resolve(false));
     }
 
-    missing($path) {
-        return !this.exists($path);
+    async missing($path) {
+        return !(await this.exists($path));
     }
 
     get($path) {
@@ -28,11 +28,15 @@ class Filesystem extends FilesystemContract {
     }
 
     replaceInFile($search, $replace, $path) {
-        this.get($path).then(content => this.put($path, content.replace($search, $replace)));
+        return this.get($path).then(content => this.put($path, content.replace($search, $replace)));
     }
 
-    prepend($path, $data) {
-        return this.exists($path).then(res => this.put($path, ($data + this.get($path)))).catch(err => this.put($path, $data))
+    async prepend($path, $data) {
+        if (await this.exists($path)) {
+            const existing = await this.get($path);
+            return this.put($path, $data + existing);
+        }
+        return this.put($path, $data);
     }
 
     append($path, $data) {
@@ -44,7 +48,7 @@ class Filesystem extends FilesystemContract {
             return fs.chmod($path, $mode);
         }
         return fs.stat($path).then(stat => {
-            return stats.mode
+            return stat.mode
         });
 
     }
@@ -56,9 +60,7 @@ class Filesystem extends FilesystemContract {
 
         for (let $path of $paths) {
             try {
-                if (!await fs.remove($path)) {
-                    $success = false;
-                }
+                await fs.remove($path);
             } catch ($e) {
                 $success = false;
             }
@@ -79,25 +81,25 @@ class Filesystem extends FilesystemContract {
         return fs.symlink($target, $link, 'junction')
     }
 
-    relativeLink($target, $link, $force) {
-        $target = path.relative($target, $link);
-        return this.link($target, $link, $force);
+    relativeLink($target, $link, $force = false) {
+        let relTarget = path.relative(path.dirname($link), $target);
+        return this.link(relTarget, $link, $force);
     }
 
     name($path) {
-        return pathinfo($path, PATHINFO_FILENAME);
+        return path.parse($path).name;
     }
 
     basename($path) {
-        return pathinfo($path, PATHINFO_BASENAME);
+        return path.basename($path);
     }
 
     dirname($path) {
-        return pathinfo($path, PATHINFO_DIRNAME);
+        return path.dirname($path);
     }
 
     extension($path) {
-        return pathinfo($path, PATHINFO_EXTENSION);
+        return path.extname($path).replace(/^\./, "");
     }
 
     guessExtension($path) {
@@ -105,31 +107,31 @@ class Filesystem extends FilesystemContract {
     }
 
     type($path) {
-        return filetype($path);
+        return fs.lstat($path).then(stats => stats.isDirectory() ? "dir" : "file").catch(() => "file");
     }
 
     mimeType($path) {
-        return finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
+        return path.extname($path).replace(/^\./, "");
     }
 
     size($path) {
-        return filesize($path);
+        return fs.stat($path).then(stats => stats.size);
     }
 
     lastModified($path) {
-        return filemtime($path);
+        return fs.stat($path).then(stats => Math.floor(stats.mtimeMs / 1000));
     }
 
     isDirectory($directory) {
-        return is_dir($directory);
+        return fs.lstat($directory).then(stats => stats.isDirectory()).catch(() => false);
     }
 
     isReadable($path) {
-        return is_readable($path);
+        return fs.access($path, fs.constants.R_OK).then(() => true).catch(() => false);
     }
 
     isWritable($path) {
-        return is_writable($path);
+        return fs.access($path, fs.constants.W_OK).then(() => true).catch(() => false);
     }
 
     isFile($file) {
@@ -139,7 +141,11 @@ class Filesystem extends FilesystemContract {
     async glob($pattern) {
         const dir = path.dirname($pattern);
         const base = path.basename($pattern);
-        return Finder.create().path(dir).glob(base || "*").find()
+        let globPattern = "*";
+        if (base && base !== ".") {
+            globPattern = base;
+        }
+        return Finder.create().path(dir).glob(globPattern).find();
     }
 
     requireOnce($path, $data = []) {
@@ -177,7 +183,7 @@ class Filesystem extends FilesystemContract {
 
     directories($directory) {
 
-        return Finder.create().path($directory).directory().depth(0).sortByName()
+        return Finder.create().path($directory).directory().depth(1).find()
 
     }
 
@@ -199,39 +205,27 @@ class Filesystem extends FilesystemContract {
             return false;
         }
 
-        return await fs.rename($from, $to) === true;
+        try {
+            await fs.rename($from, $to);
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
-    async copyDirectory($directory, $destination, $options = null) {
-        if (!this.isDirectory($directory)) {
+    async copyDirectory($directory, $destination, $options = {}) {
+        if (!await this.isDirectory($directory)) {
             return false;
         }
 
-        $options = $options ? $options : FilesystemIterator.SKIP_DOTS;
+        await this.ensureDirectoryExists($destination);
 
-        this.ensureDirectoryExists($destination);
-
-        let $items = await fs.readdir($directory, $options)
-
-        for (let $item of $items) {
-            $item = await fs.stat();
-
-            $target = path.join($destination, $item.getBasename())
-
-            if ($item.isDirectory()) {
-                $path = $item.getPathname();
-
-                if (!await this.copyDirectory($path, $target, $options)) {
-                    return false;
-                }
-            } else {
-                if (!await this.copy($item.getPathname(), $target)) {
-                    return false;
-                }
-            }
+        try {
+            await fs.copy($directory, $destination, $options);
+            return true;
+        } catch (e) {
+            return false;
         }
-
-        return true;
     }
 
     async deleteDirectory($directory, $preserve = false) {
@@ -239,29 +233,19 @@ class Filesystem extends FilesystemContract {
             return false;
         }
 
-        let $items = await fs.readdir($directory)
-
-        for (let $item of $items) {
-            $item = await fs.stat();
-
-            if ($item.isDirectory() && !$item.isSymbolicLink()) {
-                await this.deleteDirectory($item.getPathname());
-            } else {
-                await this.delete($item.getPathname());
-            }
-        }
-
-        if (!$preserve) {
-            await this.delete($directory, true);
+        if ($preserve) {
+            await fs.emptyDir($directory);
+        } else {
+            await fs.remove($directory);
         }
 
         return true;
     }
 
     async deleteDirectories($directory) {
-        $allDirectories = await this.directories($directory);
+        let $allDirectories = await this.directories($directory);
 
-        if (!empty($allDirectories)) {
+        if ($allDirectories && $allDirectories.length > 0) {
             for (let $directoryName of $allDirectories) {
                 await this.deleteDirectory($directoryName);
             }
