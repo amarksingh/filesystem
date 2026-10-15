@@ -13,7 +13,7 @@ class CoreAdapter {
      * @param {*} config
      * @returns {any}
      */
-    setConfig(config) {
+    setConfig(config: Record<string, any>) {
         this[kConfig] = config
     }
 
@@ -30,7 +30,7 @@ class CoreAdapter {
      * @param {*} root
      * @returns {any}
      */
-    setPathPrefix(root) {
+    setPathPrefix(root: any) {
         this[kRootPath] = root
     }
 
@@ -39,7 +39,7 @@ class CoreAdapter {
      * @param {*} root
      * @returns {any}
      */
-    setUrlPrefix(root) {
+    setUrlPrefix(root: any) {
         this[kRootUrlPath] = root
     }
 
@@ -48,7 +48,7 @@ class CoreAdapter {
      * @param {*} dest
      * @returns {any}
      */
-    applyPathPrefix(dest) {
+    applyPathPrefix(dest: any) {
         return path.resolve(path.join(this[kRootPath], path.join('/', path.normalize(dest))))
     }
 
@@ -57,7 +57,7 @@ class CoreAdapter {
      * @param {*} dest
      * @returns {any}
      */
-    applyUrlPrefix(dest) {
+    applyUrlPrefix(dest: any) {
         return url.resolve(([this[kRootUrlPath], (dest || '')].join('/')), '')
     }
 
@@ -67,7 +67,7 @@ class CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    ensureDirectory(dir, callback) {
+    ensureDirectory(dir: any, callback: Function) {
         ensureDir(dir, callback)
     }
 
@@ -76,7 +76,7 @@ class CoreAdapter {
      * @param {*} dest
      * @returns {any}
      */
-    parsePath(dest) {
+    parsePath(dest: any) {
         return path.parse(dest)
     }
 
@@ -85,7 +85,7 @@ class CoreAdapter {
      * @param {*} dest
      * @returns {any}
      */
-    dirname(dest) {
+    dirname(dest: any) {
         return this.parsePath(dest).dir
     }
 
@@ -94,7 +94,7 @@ class CoreAdapter {
      * @param {*} content
      * @returns {any}
      */
-    getContent(content) {
+    getContent(content: any) {
         if (Array.isArray(content))
             return content[0]
         else
@@ -106,7 +106,7 @@ class CoreAdapter {
      * @param {*} content
      * @returns {any}
      */
-    getBufferData(content) {
+    getBufferData(content: any) {
         return this.getContent(content).buffer
     }
     /**
@@ -116,7 +116,7 @@ class CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    move(path, newpath, callback) {
+    move(path: string, newpath: any, callback: Function) {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {})
     }
 
@@ -127,7 +127,7 @@ class CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    delete($path, options = {}, callback) {
+    delete($path: string, options: Record<string, any> = {}, callback: Function) {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {})
 
     }
@@ -139,7 +139,7 @@ class CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    has($path, options = {}, callback) {
+    has($path: string, options: Record<string, any> = {}, callback: Function) {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {})
 
     }
@@ -152,7 +152,7 @@ class CoreAdapter {
      * @param {*} rest
      * @returns {any}
      */
-    write($path, $contents, options = {}, ...rest) {
+    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]) {
         let callback = Array.from(rest).find(arg => typeof arg == "function") || (typeof options == "function" ? options : () => {});
         callback(this.formatError({ message: 'there was no such functionality available.' }), {})
 
@@ -165,7 +165,7 @@ class CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    read($path, options = {}, callback) {
+    read($path: string, options: Record<string, any> = {}, callback: Function) {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {})
 
     }
@@ -174,7 +174,7 @@ class CoreAdapter {
      * @param {*} err
      * @returns {any}
      */
-    formatError(err) {
+    formatError(err: any) {
         return {
             'message': 'Storage Error',
             'errors': err,

@@ -16,7 +16,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    exists($path) {
+    exists($path: string) {
         return fs.access($path).then(res => true).catch(err => Promise.resolve(false));
     }
 
@@ -26,7 +26,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    async missing($path) {
+    async missing($path: string) {
         return !(await this.exists($path));
     }
 
@@ -35,7 +35,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    get($path) {
+    get($path: string) {
         return fs.readFile($path, 'utf8').catch(err => {
             throw new FileNotFoundException(`File does not exist at path ${$path}.`);
         })
@@ -48,7 +48,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $contents
      * @returns {any}
      */
-    put($path, $contents) {
+    put($path: string, $contents: any) {
         return fs.writeFile($path, $contents);
     }
 
@@ -59,7 +59,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    replaceInFile($search, $replace, $path) {
+    replaceInFile($search: any, $replace: any, $path: string) {
         return this.get($path).then(content => this.put($path, content.replace($search, $replace)));
     }
 
@@ -70,7 +70,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $data
      * @returns {any}
      */
-    async prepend($path, $data) {
+    async prepend($path: string, $data: Record<string, any>) {
         if (await this.exists($path)) {
             const existing = await this.get($path);
             return this.put($path, $data + existing);
@@ -84,7 +84,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $data
      * @returns {any}
      */
-    append($path, $data) {
+    append($path: string, $data: Record<string, any>) {
         return fs.appendFile($path, $data);
     }
 
@@ -94,7 +94,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $mode
      * @returns {any}
      */
-    chmod($path, $mode = null) {
+    chmod($path: string, $mode: any = null) {
         if ($mode) {
             return fs.chmod($path, $mode);
         }
@@ -110,7 +110,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $paths
      * @returns {any}
      */
-    async delete($paths) {
+    async delete($paths: any) {
         $paths = Array.isArray($paths) ? $paths : arguments;
 
         let $success = true;
@@ -132,7 +132,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $target
      * @returns {any}
      */
-    move($path, $target) {
+    move($path: string, $target: Record<string, any>) {
         return fs.move($path, $target);
     }
 
@@ -142,7 +142,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $target
      * @returns {any}
      */
-    copy($path, $target) {
+    copy($path: string, $target: Record<string, any>) {
         return fs.copy($path, $target);
     }
 
@@ -153,7 +153,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $force
      * @returns {any}
      */
-    link($target, $link, $force = false) {
+    link($target: Record<string, any>, $link: any, $force: boolean = false) {
         return fs.symlink($target, $link, 'junction')
     }
 
@@ -164,7 +164,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $force
      * @returns {any}
      */
-    relativeLink($target, $link, $force = false) {
+    relativeLink($target: Record<string, any>, $link: any, $force: boolean = false) {
         let relTarget = path.relative(path.dirname($link), $target);
         return this.link(relTarget, $link, $force);
     }
@@ -174,7 +174,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    name($path) {
+    name($path: string) {
         return path.parse($path).name;
     }
 
@@ -183,7 +183,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    basename($path) {
+    basename($path: string) {
         return path.basename($path);
     }
 
@@ -192,7 +192,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    dirname($path) {
+    dirname($path: string) {
         return path.dirname($path);
     }
 
@@ -201,7 +201,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    extension($path) {
+    extension($path: string) {
         return path.extname($path).replace(/^\./, "");
     }
 
@@ -210,7 +210,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    guessExtension($path) {
+    guessExtension($path: string) {
         return path.extname($path)
     }
 
@@ -219,7 +219,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    type($path) {
+    type($path: string) {
         return fs.lstat($path).then(stats => stats.isDirectory() ? "dir" : "file").catch(() => "file");
     }
 
@@ -228,7 +228,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    mimeType($path) {
+    mimeType($path: string) {
         return path.extname($path).replace(/^\./, "");
     }
 
@@ -237,7 +237,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    size($path) {
+    size($path: string) {
         return fs.stat($path).then(stats => stats.size);
     }
 
@@ -246,7 +246,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    lastModified($path) {
+    lastModified($path: string) {
         return fs.stat($path).then(stats => Math.floor(stats.mtimeMs / 1000));
     }
 
@@ -255,7 +255,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $directory
      * @returns {any}
      */
-    isDirectory($directory) {
+    isDirectory($directory: any) {
         return fs.lstat($directory).then(stats => stats.isDirectory()).catch(() => false);
     }
 
@@ -264,7 +264,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    isReadable($path) {
+    isReadable($path: string) {
         return fs.access($path, fs.constants.R_OK).then(() => true).catch(() => false);
     }
 
@@ -273,7 +273,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $path
      * @returns {any}
      */
-    isWritable($path) {
+    isWritable($path: string) {
         return fs.access($path, fs.constants.W_OK).then(() => true).catch(() => false);
     }
 
@@ -282,7 +282,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $file
      * @returns {any}
      */
-    isFile($file) {
+    isFile($file: any) {
         return fs.lstat($file).then(stats => stats.isFile()).catch(err => false);
     }
 
@@ -292,7 +292,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $pattern
      * @returns {any}
      */
-    async glob($pattern) {
+    async glob($pattern: string) {
         const dir = path.dirname($pattern);
         const base = path.basename($pattern);
         let globPattern = "*";
@@ -308,7 +308,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $data
      * @returns {any}
      */
-    requireOnce($path, $data = []) {
+    requireOnce($path: string, $data: any[] = []) {
         return this.isFile($path).then($exists => {
 
             if ($exists) {
@@ -329,7 +329,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $hidden
      * @returns {any}
      */
-    files($directory, $hidden = false) {
+    files($directory: any, $hidden: boolean = false) {
         let inst = Finder.create().path($directory)
         if ($hidden) {
             inst.ignoreHiddenDirectories()
@@ -344,7 +344,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $hidden
      * @returns {any}
      */
-    allFiles($directory, $hidden = false) {
+    allFiles($directory: any, $hidden: boolean = false) {
         let inst = Finder.create().path($directory)
         if ($hidden) {
             inst.ignoreHiddenDirectories()
@@ -358,7 +358,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $directory
      * @returns {any}
      */
-    directories($directory) {
+    directories($directory: any) {
 
         return Finder.create().path($directory).directory().depth(1).find()
 
@@ -371,7 +371,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $recursive
      * @returns {any}
      */
-    ensureDirectoryExists($path, $mode = 0o755, $recursive = true) {
+    ensureDirectoryExists($path: string, $mode: any = 0o755, $recursive: boolean = true) {
         return fs.ensureDir($path, $mode).then($exists => true).catch(err => false)
 
     }
@@ -384,7 +384,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $force
      * @returns {any}
      */
-    makeDirectory($path, $mode = 0o755, $recursive = false, $force = false) {
+    makeDirectory($path: string, $mode: any = 0o755, $recursive: boolean = false, $force: boolean = false) {
         return fs.mkdir($path, {
             mode: $mode,
             recursive: $recursive
@@ -400,7 +400,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $overwrite
      * @returns {any}
      */
-    async moveDirectory($from, $to, $overwrite = false) {
+    async moveDirectory($from: any, $to: any, $overwrite: boolean = false) {
         if ($overwrite && await this.isDirectory($to) && !await this.deleteDirectory($to)) {
             return false;
         }
@@ -421,7 +421,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $options
      * @returns {any}
      */
-    async copyDirectory($directory, $destination, $options = {}) {
+    async copyDirectory($directory: any, $destination: any, $options: Record<string, any> = {}) {
         if (!await this.isDirectory($directory)) {
             return false;
         }
@@ -443,7 +443,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $preserve
      * @returns {any}
      */
-    async deleteDirectory($directory, $preserve = false) {
+    async deleteDirectory($directory: any, $preserve: boolean = false) {
         if (!await this.isDirectory($directory)) {
             return false;
         }
@@ -463,7 +463,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $directory
      * @returns {any}
      */
-    async deleteDirectories($directory) {
+    async deleteDirectories($directory: any) {
         let $allDirectories = await this.directories($directory);
 
         if ($allDirectories && $allDirectories.length > 0) {
@@ -482,7 +482,7 @@ class Filesystem extends FilesystemContract {
      * @param {*} $directory
      * @returns {any}
      */
-    cleanDirectory($directory) {
+    cleanDirectory($directory: any) {
         return this.deleteDirectory($directory, true);
     }
 }

@@ -11,7 +11,7 @@ class Azure extends CoreAdapter {
      * @param {*} $client
      * @param {*} $config
      */
-    constructor($client, $config) {
+    constructor($client: any, $config: Record<string, any>) {
         super()
         this[kClient] = $client;
         this[kHandler] = typeof $config.handler == 'function' ? new $config.handler : typeof $config.handler == 'object' ? $config.handler : {};
@@ -25,7 +25,7 @@ class Azure extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    read($path, options = {}, callback) {
+    read($path: string, options: Record<string, any> = {}, callback: Function) {
         let basePath = this.applyUrlPrefix();
         this[kClient].getContainer(options.container).getBlockBlobClient($path).downloadToBuffer()
             .then(data => ({ error: null, data: data }))
@@ -65,7 +65,7 @@ class Azure extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    write($path, data, options = {}, callback) {
+    write($path: string, data: Record<string, any>, options: Record<string, any> = {}, callback: Function) {
         let basePath = this.applyUrlPrefix();
         this[kClient].getContainer(options.container).getBlockBlobClient($path).upload(data, data.length)
             .then(response => ({ error: null, response }))

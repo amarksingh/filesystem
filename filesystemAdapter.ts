@@ -14,7 +14,7 @@ class FilesystemAdapter {
      * @param {*} $adapter
      * @param {*} $handler
      */
-    constructor($adapter, $handler) {
+    constructor($adapter: any, $handler: Function) {
         this[kAdapter] = $adapter;
         this[kHandler] = $handler;
     }
@@ -25,7 +25,7 @@ class FilesystemAdapter {
      * @param {*} options
      * @returns {any}
      */
-    exists($path, options) {
+    exists($path: string, options: Record<string, any>) {
 
         return new Promise((resolve, reject) => {
             this[kAdapter].has($path, options, (err, data, basePath) => {
@@ -39,7 +39,7 @@ class FilesystemAdapter {
      * @param {*} $path
      * @returns {any}
      */
-    path($path) {
+    path($path: string) {
         if (typeof this[kAdapter].applyPathPrefix == "function") {
             return this[kAdapter].applyPathPrefix($path);
         }
@@ -52,7 +52,7 @@ class FilesystemAdapter {
      * @param {*} options
      * @returns {any}
      */
-    get($path, options) {
+    get($path: string, options: Record<string, any>) {
 
         return new Promise((resolve, reject) => {
             this[kAdapter].read($path, options, (err, data, basePath) => {
@@ -71,7 +71,7 @@ class FilesystemAdapter {
      * @param {*} rest
      * @returns {any}
      */
-    delete($path, ...rest) {
+    delete($path: string, ...rest: any[]) {
         rest = Array.from(rest)
         let callback = rest.find(arg => typeof arg == 'function')
         let options = rest.find(arg => typeof arg == 'object') || {}
@@ -96,7 +96,7 @@ class FilesystemAdapter {
      * @param {*} options
      * @returns {any}
      */
-    makeDirectory($path, options) {
+    makeDirectory($path: string, options: Record<string, any>) {
         return new Promise((resolve, reject) => {
             this[kAdapter].createDir($path, options, (err, data, basePath) => {
                 if (err) {
@@ -115,7 +115,7 @@ class FilesystemAdapter {
      * @param {*} options
      * @returns {any}
      */
-    put($path, content, options = {}) {
+    put($path: string, content: any, options: Record<string, any> = {}) {
 
         return new Promise((resolve, reject) => {
             this[kAdapter].write($path, content, options, (err, data, basePath) => {
@@ -135,7 +135,7 @@ class FilesystemAdapter {
      * @param {*} $options
      * @returns {any}
      */
-    putFile($path, $file, $options = {}) {
+    putFile($path: string, $file: any, $options: Record<string, any> = {}) {
         return this.putFileAs($path, $file, $file.getHashname(), $options);
     }
 
@@ -147,7 +147,7 @@ class FilesystemAdapter {
      * @param {*} $options
      * @returns {any}
      */
-    putFileAs($path, $file, $name, $options = {}) {
+    putFileAs($path: string, $file: any, $name: string, $options: Record<string, any> = {}) {
         $path = path.join($path, $name)
         return this.put($path, $file.getBufferData(), $options);
     }

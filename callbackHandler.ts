@@ -12,7 +12,7 @@ class FilesystemHandler {
      * @param {*} basePath
      * @returns {any}
      */
-    exists(error, data, callback, path, options, basePath) {
+    exists(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
         if (error) {
             callback(error)
         } else {
@@ -31,7 +31,7 @@ class FilesystemHandler {
      * @param {*} basePath
      * @returns {any}
      */
-    get(error, data, callback, path, options, basePath) {
+    get(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
         if (error) {
             callback(error)
         } else {
@@ -49,7 +49,7 @@ class FilesystemHandler {
      * @param {*} basePath
      * @returns {any}
      */
-    delete(error, data, callback, path, options, basePath) {
+    delete(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
         if (error) {
             callback(error)
         } else {
@@ -67,7 +67,7 @@ class FilesystemHandler {
      * @param {*} basePath
      * @returns {any}
      */
-    put(error, data, callback, path, options, basePath) {
+    put(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
         if (error) {
             callback(error)
         } else {
@@ -83,7 +83,7 @@ class FilesystemHandler {
      * @param {*} options
      * @returns {any}
      */
-    global(error, data, callback, path, options) {
+    global(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>) {
         if (error) {
             callback(error)
         } else {
@@ -97,7 +97,7 @@ class FilesystemHandler {
      * @param {*} callback
      * @returns {any}
      */
-    createDir(error, data, callback) {
+    createDir(error: any, data: Record<string, any>, callback: Function) {
         if (error) {
             callback(error)
         } else {

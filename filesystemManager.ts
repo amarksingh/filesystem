@@ -16,7 +16,7 @@ class FileSystemManager extends Manager {
      * Create a new instance.
      * @param {*} $app
      */
-    constructor($app) {
+    constructor($app: any) {
         super($app)
         this[kHandler] = this.getConfig('handler')
         if (!this[kHandler]) {
@@ -40,7 +40,7 @@ class FileSystemManager extends Manager {
      * @param {*} $name
      * @returns {any}
      */
-    drive($name = null) {
+    drive($name: any = null) {
         return this.driver($name);
     }
 
@@ -49,7 +49,7 @@ class FileSystemManager extends Manager {
      * @param {*} name
      * @returns {any}
      */
-    disk(name = null) {
+    disk(name: any = null) {
         return this.driver(name)
     }
 
@@ -67,7 +67,7 @@ class FileSystemManager extends Manager {
      * @param {*} $name
      * @returns {any}
      */
-    resolve($name) {
+    resolve($name: string) {
         var $config = this.getConfig($name);
         if (!$config) {
             throw new InvalidArgumentException("Disk [" + $name + "] was not available.");
@@ -81,7 +81,7 @@ class FileSystemManager extends Manager {
      * @param {*} $config
      * @returns {any}
      */
-    createLocalDriver($config) {
+    createLocalDriver($config: Record<string, any>) {
         return this.adapt(new(require('./adapter/local'))($config['root'], $config), $config);
     }
 
@@ -90,7 +90,7 @@ class FileSystemManager extends Manager {
      * @param {*} $config
      * @returns {any}
      */
-    createAzureDriver($config) {
+    createAzureDriver($config: Record<string, any>) {
         return this.adapt(new(require('./adapter/azure'))(new(require('./clients/azure'))($config), $config), $config);
     }
 
@@ -99,7 +99,7 @@ class FileSystemManager extends Manager {
      * @param {*} $config
      * @returns {any}
      */
-    createS3Driver($config) {
+    createS3Driver($config: Record<string, any>) {
         return this.adapt(new(require('./adapter/s3'))(new(require('./clients/s3'))($config), $config), $config);
     }
 
@@ -109,7 +109,7 @@ class FileSystemManager extends Manager {
      * @param {*} config
      * @returns {any}
      */
-    adapt(adapter, config) {
+    adapt(adapter: any, config: Record<string, any>) {
         return new FilesystemAdapter(adapter, this[kHandler]);
     }
 
@@ -118,7 +118,7 @@ class FileSystemManager extends Manager {
      * @param {*} name
      * @returns {any}
      */
-    getConfig(name) {
+    getConfig(name: string) {
         return super.getConfig(`disks.${name}`) || super.getConfig(name);
     }
 
@@ -135,7 +135,7 @@ class FileSystemManager extends Manager {
      * @param {*} FileRequest
      * @returns {any}
      */
-    registerToRequest(FileRequest) {
+    registerToRequest(FileRequest: any) {
         let self = this
         FileRequest.prototype.store = function(dir, disk, options) {
             dir = dir || '';

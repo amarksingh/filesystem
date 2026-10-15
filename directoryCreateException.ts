@@ -7,7 +7,7 @@ class DirectoryCreateException extends DirectoryCreateExceptionContract {
      * Create a new instance.
      * @param {*} errors
      */
-    constructor(errors) {
+    constructor(errors: any) {
         super();
 
         this.name = this.constructor.name;

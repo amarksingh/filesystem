@@ -9,7 +9,7 @@ class S3Client {
      * Create a new instance.
      * @param {*} $config
      */
-    constructor($config) {
+    constructor($config: Record<string, any>) {
         this.applyConnection($config)
         return this
     }
@@ -25,7 +25,7 @@ class S3Client {
      * @param {*} $config
      * @returns {any}
      */
-    applyConnection($config) {
+    applyConnection($config: Record<string, any>) {
         this[kConnection] = new S3({ accessKeyId: $config['key'], secretAccessKey: $config['secret'], params: { Bucket: $config['bucket'] } })
     }
 

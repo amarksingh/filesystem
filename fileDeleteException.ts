@@ -8,7 +8,7 @@ class FileNotFoundException extends fileNotFoundExceptionContract {
      * @param {*} errors
      * @param {*} path
      */
-    constructor(errors, path) {
+    constructor(errors: any, path: string) {
         super();
         this.name = this.constructor.name;
         this.message = 'Unable to delete ';

@@ -13,7 +13,7 @@ class Local extends CoreAdapter {
      * @param {*} root
      * @param {*} $config
      */
-    constructor(root = '', $config) {
+    constructor(root: string = '', $config: Record<string, any>) {
         super()
         this.setPathPrefix(root)
         this.setConfig($config)
@@ -26,7 +26,7 @@ class Local extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    move(path, newpath, callback) {
+    move(path: string, newpath: any, callback: Function) {
         if (callback)
             return fs.move(path, newpath, {
                 overwrite: true
@@ -45,7 +45,7 @@ class Local extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    delete($path, options = {}, callback) {
+    delete($path: string, options: Record<string, any> = {}, callback: Function) {
         let location = this.applyPathPrefix($path);
         fs.remove(location, (error) => {
             if (typeof this[kHandler].delete == 'function') {
@@ -68,7 +68,7 @@ class Local extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    createDir($path, options = {}, callback) {
+    createDir($path: string, options: Record<string, any> = {}, callback: Function) {
         let location = this.applyPathPrefix($path);
         fs.mkdir(location, { recursive: true }, (error) => {
             if (typeof this[kHandler].createDir == 'function') {
@@ -90,7 +90,7 @@ class Local extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    has($path, options = { constants: 'F_OK' }, callback) {
+    has($path: string, options = { constants: 'F_OK' }, callback: Function) {
         let location = this.applyPathPrefix($path);
         fs.access(location, fs.constants[options.constants], (error) => {
             if (typeof this[kHandler].has == 'function') {
@@ -115,7 +115,7 @@ class Local extends CoreAdapter {
      * @param {*} rest
      * @returns {any}
      */
-    write($path, $contents, options = {}, ...rest) {
+    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]) {
 
         let callback = Array.from(rest).find(arg => typeof arg == 'function')
         let location = this.applyPathPrefix($path);
@@ -160,7 +160,7 @@ class Local extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    read($path, options = {}, callback) {
+    read($path: string, options: Record<string, any> = {}, callback: Function) {
         let location = this.applyPathPrefix($path);
         fs.readFile(location, {
             encoding: (this.getConfig().encoding || (options.encoding || 'utf-8'))
@@ -191,7 +191,7 @@ class Local extends CoreAdapter {
      * @param {*} callback
      * @returns {any}
      */
-    global($path, options = {}, callback) {
+    global($path: string, options: Record<string, any> = {}, callback: Function) {
 
     }
 

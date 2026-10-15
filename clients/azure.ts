@@ -9,7 +9,7 @@ class AzureClient {
      * Create a new instance.
      * @param {*} $config
      */
-    constructor($config) {
+    constructor($config: Record<string, any>) {
         this[kConnection] = this.getConnection($config['account'], Buffer.from($config['key'], 'base64').toString('ascii'));
         this[kContainer] = this.getContainer($config['container']);
         return this
@@ -20,7 +20,7 @@ class AzureClient {
      * @param {*} key
      * @returns {any}
      */
-    getConnection(account, key) {
+    getConnection(account: any, key: string) {
         if (account || key) {
             return new BlobServiceClient(
                 `https://${account}.blob.core.windows.net`,
@@ -34,7 +34,7 @@ class AzureClient {
      * @param {*} container
      * @returns {any}
      */
-    getContainer(container) {
+    getContainer(container: any) {
         if (container) {
             return this[kConnection].getContainerClient(container)
         }
