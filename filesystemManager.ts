@@ -5,10 +5,17 @@ const InvalidArgumentException = require('./invalidArgumentException')
 const FilesystemAdapter = require('./filesystemAdapter')
 const callbackHandler = require('./callbackHandler')
 const kHandler = Symbol('handler')
+/**
+ * Class FileSystemManager.
+ */
 class FileSystemManager extends Manager {
 
     $type = 'filesystem';
 
+    /**
+     * Create a new instance.
+     * @param {*} $app
+     */
     constructor($app) {
         super($app)
         this[kHandler] = this.getConfig('handler')
@@ -28,19 +35,38 @@ class FileSystemManager extends Manager {
         }
     }
 
+    /**
+     * drive method.
+     * @param {*} $name
+     * @returns {any}
+     */
     drive($name = null) {
         return this.driver($name);
     }
 
+    /**
+     * disk method.
+     * @param {*} name
+     * @returns {any}
+     */
     disk(name = null) {
         return this.driver(name)
     }
 
+    /**
+     * cloud method.
+     * @returns {any}
+     */
     cloud() {
         var name = this.getDefaultCloudDriver();
         return this.disk(name)
     }
 
+    /**
+     * resolve method.
+     * @param {*} $name
+     * @returns {any}
+     */
     resolve($name) {
         var $config = this.getConfig($name);
         if (!$config) {
@@ -50,30 +76,65 @@ class FileSystemManager extends Manager {
     }
 
 
+    /**
+     * createLocalDriver method.
+     * @param {*} $config
+     * @returns {any}
+     */
     createLocalDriver($config) {
         return this.adapt(new(require('./adapter/local'))($config['root'], $config), $config);
     }
 
+    /**
+     * createAzureDriver method.
+     * @param {*} $config
+     * @returns {any}
+     */
     createAzureDriver($config) {
         return this.adapt(new(require('./adapter/azure'))(new(require('./clients/azure'))($config), $config), $config);
     }
 
+    /**
+     * createS3Driver method.
+     * @param {*} $config
+     * @returns {any}
+     */
     createS3Driver($config) {
         return this.adapt(new(require('./adapter/s3'))(new(require('./clients/s3'))($config), $config), $config);
     }
 
+    /**
+     * adapt method.
+     * @param {*} adapter
+     * @param {*} config
+     * @returns {any}
+     */
     adapt(adapter, config) {
         return new FilesystemAdapter(adapter, this[kHandler]);
     }
 
+    /**
+     * getConfig method.
+     * @param {*} name
+     * @returns {any}
+     */
     getConfig(name) {
         return super.getConfig(`disks.${name}`) || super.getConfig(name);
     }
 
+    /**
+     * getDefaultCloudDriver method.
+     * @returns {any}
+     */
     getDefaultCloudDriver() {
         return super.getConfig('cloud');
     }
 
+    /**
+     * registerToRequest method.
+     * @param {*} FileRequest
+     * @returns {any}
+     */
     registerToRequest(FileRequest) {
         let self = this
         FileRequest.prototype.store = function(dir, disk, options) {

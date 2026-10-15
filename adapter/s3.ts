@@ -4,8 +4,16 @@ const kHandler = Symbol('handler')
 const { v4 } = require("uuid");
 const path = require('path')
 
+/**
+ * Class Azure.
+ */
 class Azure extends CoreAdapter {
 
+    /**
+     * Create a new instance.
+     * @param {*} $client
+     * @param {*} $config
+     */
     constructor($client, $config) {
         super()
         this[kClient] = $client;
@@ -13,6 +21,13 @@ class Azure extends CoreAdapter {
         this.setUrlPrefix(this[kClient].url)
     }
 
+    /**
+     * read method.
+     * @param {*} $path
+     * @param {*} options
+     * @param {*} callback
+     * @returns {any}
+     */
     read($path, options = {}, callback) {
         let basePath = this.applyUrlPrefix();
         $path = $path.replaceAll('\\', '/')
@@ -33,6 +48,12 @@ class Azure extends CoreAdapter {
                         contents: data
                     })
                 } else {
+                    /**
+                     * callback method.
+                     * @param {*} error
+                     * @param {*} function(
+                     * @returns {any}
+                     */
                     callback(error, function() {
                         return {
                             'type': 'file',
@@ -43,6 +64,14 @@ class Azure extends CoreAdapter {
                 }
             });
     }
+    /**
+     * write method.
+     * @param {*} $path
+     * @param {*} data
+     * @param {*} options
+     * @param {*} callback
+     * @returns {any}
+     */
     write($path, data, options = {}, callback) {
 
         $path = $path.replaceAll('\\', '/')
@@ -69,6 +98,12 @@ class Azure extends CoreAdapter {
                         contents: data
                     })
                 } else {
+                    /**
+                     * callback method.
+                     * @param {*} error
+                     * @param {*} function(
+                     * @returns {any}
+                     */
                     callback(error, function() {
                         return {
                             'type': 'file',

@@ -1,5 +1,12 @@
 const DirectoryCreateExceptionContract = require('@ostro/contracts/filesystem/directoryCreateException')
+/**
+ * Class DirectoryCreateException.
+ */
 class DirectoryCreateException extends DirectoryCreateExceptionContract {
+    /**
+     * Create a new instance.
+     * @param {*} errors
+     */
     constructor(errors) {
         super();
 

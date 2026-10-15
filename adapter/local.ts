@@ -4,13 +4,28 @@ const path = require('path')
 const { v4 } = require("uuid");
 const kHandler = Symbol('handler')
 
+/**
+ * Class Local.
+ */
 class Local extends CoreAdapter {
+    /**
+     * Create a new instance.
+     * @param {*} root
+     * @param {*} $config
+     */
     constructor(root = '', $config) {
         super()
         this.setPathPrefix(root)
         this.setConfig($config)
         this[kHandler] = (typeof $config.handler == 'function' ? new $config.handler : (typeof $config.handler == 'object' ? $config.handler : {}))
     }
+    /**
+     * move method.
+     * @param {*} path
+     * @param {*} newpath
+     * @param {*} callback
+     * @returns {any}
+     */
     move(path, newpath, callback) {
         if (callback)
             return fs.move(path, newpath, {
@@ -23,6 +38,13 @@ class Local extends CoreAdapter {
                 overwrite: true
             })
     }
+    /**
+     * delete method.
+     * @param {*} $path
+     * @param {*} options
+     * @param {*} callback
+     * @returns {any}
+     */
     delete($path, options = {}, callback) {
         let location = this.applyPathPrefix($path);
         fs.remove(location, (error) => {
@@ -39,6 +61,13 @@ class Local extends CoreAdapter {
             }
         });
     }
+    /**
+     * createDir method.
+     * @param {*} $path
+     * @param {*} options
+     * @param {*} callback
+     * @returns {any}
+     */
     createDir($path, options = {}, callback) {
         let location = this.applyPathPrefix($path);
         fs.mkdir(location, { recursive: true }, (error) => {
@@ -54,6 +83,13 @@ class Local extends CoreAdapter {
             }
         });
     }
+    /**
+     * has method.
+     * @param {*} $path
+     * @param {*} options
+     * @param {*} callback
+     * @returns {any}
+     */
     has($path, options = { constants: 'F_OK' }, callback) {
         let location = this.applyPathPrefix($path);
         fs.access(location, fs.constants[options.constants], (error) => {
@@ -71,6 +107,14 @@ class Local extends CoreAdapter {
         });
     }
 
+    /**
+     * write method.
+     * @param {*} $path
+     * @param {*} $contents
+     * @param {*} options
+     * @param {*} rest
+     * @returns {any}
+     */
     write($path, $contents, options = {}, ...rest) {
 
         let callback = Array.from(rest).find(arg => typeof arg == 'function')
@@ -109,6 +153,13 @@ class Local extends CoreAdapter {
 
     }
 
+    /**
+     * read method.
+     * @param {*} $path
+     * @param {*} options
+     * @param {*} callback
+     * @returns {any}
+     */
     read($path, options = {}, callback) {
         let location = this.applyPathPrefix($path);
         fs.readFile(location, {
@@ -133,6 +184,13 @@ class Local extends CoreAdapter {
         });
 
     }
+    /**
+     * global method.
+     * @param {*} $path
+     * @param {*} options
+     * @param {*} callback
+     * @returns {any}
+     */
     global($path, options = {}, callback) {
 
     }

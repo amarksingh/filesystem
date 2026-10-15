@@ -5,12 +5,26 @@ const FileUploadException = require('./fileUploadException')
 const DirectoryCreateException = require('./directoryCreateException')
 const kAdapter = Symbol('adapter')
 const kHandler = Symbol('handler')
+/**
+ * Class FilesystemAdapter.
+ */
 class FilesystemAdapter {
+    /**
+     * Create a new instance.
+     * @param {*} $adapter
+     * @param {*} $handler
+     */
     constructor($adapter, $handler) {
         this[kAdapter] = $adapter;
         this[kHandler] = $handler;
     }
 
+    /**
+     * exists method.
+     * @param {*} $path
+     * @param {*} options
+     * @returns {any}
+     */
     exists($path, options) {
 
         return new Promise((resolve, reject) => {
@@ -20,6 +34,11 @@ class FilesystemAdapter {
         })
     }
 
+    /**
+     * path method.
+     * @param {*} $path
+     * @returns {any}
+     */
     path($path) {
         if (typeof this[kAdapter].applyPathPrefix == "function") {
             return this[kAdapter].applyPathPrefix($path);
@@ -27,6 +46,12 @@ class FilesystemAdapter {
         return this[kAdapter].getAdapter().getPathPrefix()[$path];
     }
 
+    /**
+     * get method.
+     * @param {*} $path
+     * @param {*} options
+     * @returns {any}
+     */
     get($path, options) {
 
         return new Promise((resolve, reject) => {
@@ -40,6 +65,12 @@ class FilesystemAdapter {
         })
     }
 
+    /**
+     * delete method.
+     * @param {*} $path
+     * @param {*} rest
+     * @returns {any}
+     */
     delete($path, ...rest) {
         rest = Array.from(rest)
         let callback = rest.find(arg => typeof arg == 'function')
@@ -59,6 +90,12 @@ class FilesystemAdapter {
         }
     }
 
+    /**
+     * makeDirectory method.
+     * @param {*} $path
+     * @param {*} options
+     * @returns {any}
+     */
     makeDirectory($path, options) {
         return new Promise((resolve, reject) => {
             this[kAdapter].createDir($path, options, (err, data, basePath) => {
@@ -71,6 +108,13 @@ class FilesystemAdapter {
         })
     }
 
+    /**
+     * put method.
+     * @param {*} $path
+     * @param {*} content
+     * @param {*} options
+     * @returns {any}
+     */
     put($path, content, options = {}) {
 
         return new Promise((resolve, reject) => {
@@ -84,15 +128,34 @@ class FilesystemAdapter {
         })
     }
 
+    /**
+     * putFile method.
+     * @param {*} $path
+     * @param {*} $file
+     * @param {*} $options
+     * @returns {any}
+     */
     putFile($path, $file, $options = {}) {
         return this.putFileAs($path, $file, $file.getHashname(), $options);
     }
 
+    /**
+     * putFileAs method.
+     * @param {*} $path
+     * @param {*} $file
+     * @param {*} $name
+     * @param {*} $options
+     * @returns {any}
+     */
     putFileAs($path, $file, $name, $options = {}) {
         $path = path.join($path, $name)
         return this.put($path, $file.getBufferData(), $options);
     }
 
+    /**
+     * getAdapter method.
+     * @returns {any}
+     */
     getAdapter() {
         return this[kAdapter];
     }
