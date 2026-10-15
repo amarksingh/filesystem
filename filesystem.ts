@@ -1,15 +1,18 @@
-const FilesystemContract = require('@ostro/contracts/filesystem/filesystem')
-const fs = require('fs-extra')
-const Finder = require('filehound')
-const path = require('path')
-const FileNotFoundException = require('./fileNotFoundException')
-const FileDeleteException = require('./fileDeleteException')
-const FileUploadException = require('./fileUploadException')
-const DirectoryCreateException = require('./directoryCreateException')
+import type { IFilesystem } from '@ostro/contracts/filesystem/filesystem';
+
+const FilesystemContract = require('@ostro/contracts/filesystem/filesystem');
+const fs = require('fs-extra');
+const Finder = require('filehound');
+const path = require('path');
+const FileNotFoundException = require('./fileNotFoundException');
+const FileDeleteException = require('./fileDeleteException');
+const FileUploadException = require('./fileUploadException');
+const DirectoryCreateException = require('./directoryCreateException');
+
 /**
  * Class Filesystem.
  */
-class Filesystem extends FilesystemContract {
+class Filesystem extends FilesystemContract implements IFilesystem {
 
     /**
      * exists method.
