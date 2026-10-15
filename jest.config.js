@@ -20,7 +20,7 @@ module.exports = {
         "^@ostro/contracts/(.*)$": "<rootDir>/../contracts/$1",
         "^@ostro/contracts$": "<rootDir>/../contracts",
         "^@ostro/filesystem/(.*)$": "<rootDir>/$1",
-        "^@ostro/filesystem$": "<rootDir>/filesystemManager.js"
+        "^@ostro/filesystem$": "<rootDir>/filesystemManager"
     },
     "collectCoverage": true,
     "coverageDirectory": "coverage",
@@ -30,9 +30,9 @@ module.exports = {
         "clover"
     ],
     "collectCoverageFrom": [
-        "<rootDir>/*.js",
-        "<rootDir>/adapter/**/*.js",
-        "<rootDir>/clients/**/*.js",
+        "<rootDir>/*.ts",
+        "<rootDir>/adapter/**/*.ts",
+        "<rootDir>/clients/**/*.ts",
         "!<rootDir>/jest.config.js"
     ]
 };
