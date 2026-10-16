@@ -1,52 +1,60 @@
-const fs = require('fs-extra')
-const CoreAdapter = require('./CoreAdapter')
-const path = require('path')
-const { v4 } = require("uuid");
-const kHandler = Symbol('handler')
+import fs from 'fs-extra';
+import CoreAdapter from './CoreAdapter';
+import path from 'path';
+import { v4 } from 'uuid';
+
+const kHandler: unique symbol = Symbol('handler');
 
 /**
  * Class Local.
  */
 class Local extends CoreAdapter {
+    [kHandler]: any;
+
     /**
      * Create a new instance.
-     * @param {*} root
-     * @param {*} $config
+     *
+     * @param root - Base root directory.
+     * @param $config - Configuration object.
      */
     constructor(root: string = '', $config: Record<string, any>) {
-        super()
-        this.setPathPrefix(root)
-        this.setConfig($config)
-        this[kHandler] = (typeof $config.handler == 'function' ? new $config.handler : (typeof $config.handler == 'object' ? $config.handler : {}))
+        super();
+        this.setPathPrefix(root);
+        this.setConfig($config);
+        this[kHandler] = (typeof $config.handler == 'function' ? new $config.handler() : (typeof $config.handler == 'object' ? $config.handler : {}));
     }
+
     /**
      * move method.
-     * @param {*} path
-     * @param {*} newpath
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param path - Source path.
+     * @param newpath - Destination path.
+     * @param callback - Optional completion callback.
+     * @returns Promise if no callback, or void.
      */
-    move(path: string, newpath: any, callback: Function) {
-        if (callback)
+    move(path: string, newpath: any, callback?: Function): any {
+        if (callback) {
             return fs.move(path, newpath, {
                 overwrite: true
             }, function(err, res) {
-                callback(err, res, newpath)
-            })
-        else
+                callback(err, res, newpath);
+            });
+        } else {
             return fs.move(path, newpath, {
                 overwrite: true
-            })
+            });
+        }
     }
+
     /**
      * delete method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - File or directory path to delete.
+     * @param options - Deletion options.
+     * @param callback - Completion callback.
      */
-    delete($path: string, options: Record<string, any> = {}, callback: Function) {
-        let location = this.applyPathPrefix($path);
+    delete($path: string, options: Record<string, any> = {}, callback: Function): void {
+        const location: string = this.applyPathPrefix($path);
         fs.remove(location, (error) => {
             if (typeof this[kHandler].delete == 'function') {
                 this[kHandler].delete({
@@ -55,21 +63,22 @@ class Local extends CoreAdapter {
                     options,
                     callback,
                     error,
-                })
+                });
             } else {
-                callback(error, true, location)
+                callback(error, true, location);
             }
         });
     }
+
     /**
      * createDir method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - Directory path to create.
+     * @param options - Directory options.
+     * @param callback - Completion callback.
      */
-    createDir($path: string, options: Record<string, any> = {}, callback: Function) {
-        let location = this.applyPathPrefix($path);
+    createDir($path: string, options: Record<string, any> = {}, callback: Function): void {
+        const location: string = this.applyPathPrefix($path);
         fs.mkdir(location, { recursive: true }, (error) => {
             if (typeof this[kHandler].createDir == 'function') {
                 this[kHandler].createDir({
@@ -77,22 +86,23 @@ class Local extends CoreAdapter {
                     options,
                     callback,
                     error,
-                })
+                });
             } else {
-                callback(error, true, location)
+                callback(error, true, location);
             }
         });
     }
+
     /**
      * has method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - File path to check.
+     * @param options - Access options.
+     * @param callback - Result callback.
      */
-    has($path: string, options = { constants: 'F_OK' }, callback: Function) {
-        let location = this.applyPathPrefix($path);
-        fs.access(location, fs.constants[options.constants], (error) => {
+    has($path: string, options: { constants: keyof typeof fs.constants | string } = { constants: 'F_OK' }, callback: Function): void {
+        const location: string = this.applyPathPrefix($path);
+        fs.access(location, (fs.constants as any)[options.constants], (error) => {
             if (typeof this[kHandler].has == 'function') {
                 this[kHandler].has({
                     basePath: location,
@@ -100,70 +110,66 @@ class Local extends CoreAdapter {
                     options,
                     callback,
                     error,
-                })
+                });
             } else {
-                callback(error, true)
+                callback(error, true);
             }
         });
     }
 
     /**
      * write method.
-     * @param {*} $path
-     * @param {*} $contents
-     * @param {*} options
-     * @param {*} rest
-     * @returns {any}
+     *
+     * @param $path - File path to write to.
+     * @param $contents - Content to write.
+     * @param options - Write options.
+     * @param rest - Extra arguments including callback.
      */
-    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]) {
-
-        let callback = Array.from(rest).find(arg => typeof arg == 'function')
-        let location = this.applyPathPrefix($path);
-        fs.stat(location).then(res=>{
-            if(res.isDirectory()){
-               return path.join(location,v4())
+    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]): void {
+        const callback: Function = Array.from(rest).find(arg => typeof arg == 'function') as Function;
+        const location: string = this.applyPathPrefix($path);
+        fs.stat(location).then(res => {
+            if (res.isDirectory()) {
+                return path.join(location, v4());
             }
-            return location
+            return location;
         })
-        .catch(e=>location)
-        .then(location=>{
-            this.ensureDirectory(this.dirname(location), () => {
-                fs.writeFile(location, $contents, (error, data) => {
+        .catch(() => location)
+        .then(loc => {
+            this.ensureDirectory(this.dirname(loc), () => {
+                fs.writeFile(loc, $contents, (error, data) => {
                     if (typeof this[kHandler].write == 'function') {
                         this[kHandler].write({
-                            basePath: location,
+                            basePath: loc,
                             path: $path,
                             options,
                             callback,
                             error,
                             content: $contents
-                        })
+                        });
                     } else {
                         callback(error, {
                             'type': 'file',
                             'path': $path,
                             'message': 'File created successfully'
-                        }, location)
+                        }, loc);
                     }
-                })
+                });
             });
-        })
-
-        
-
+        });
     }
 
     /**
      * read method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - File path to read from.
+     * @param options - Read options.
+     * @param callback - Result callback.
      */
-    read($path: string, options: Record<string, any> = {}, callback: Function) {
-        let location = this.applyPathPrefix($path);
+    read($path: string, options: Record<string, any> = {}, callback: Function): void {
+        const location: string = this.applyPathPrefix($path);
         fs.readFile(location, {
-            encoding: (this.getConfig().encoding || (options.encoding || 'utf-8'))
+            encoding: (this.getConfig()?.encoding || (options.encoding || 'utf-8'))
         }, (error, data) => {
             if (typeof this[kHandler].read == 'function') {
                 this[kHandler].read({
@@ -173,27 +179,26 @@ class Local extends CoreAdapter {
                     callback,
                     error,
                     response: data
-                })
+                });
             } else {
                 callback(error, {
                     'type': 'file',
                     'path': $path,
                     'contents': data
-                }, location)
+                }, location);
             }
         });
-
     }
+
     /**
      * global method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - Optional path.
+     * @param options - Optional options.
+     * @param callback - Optional callback.
      */
-    global($path: string, options: Record<string, any> = {}, callback: Function) {
-
+    global($path?: string, options: Record<string, any> = {}, callback?: Function): void {
     }
-
 }
-module.exports = Local
+
+export = Local;

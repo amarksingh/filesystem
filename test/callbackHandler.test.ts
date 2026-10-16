@@ -1,7 +1,8 @@
-const FilesystemHandler = require("../callbackHandler");
+import FilesystemHandler from "../callbackHandler";
 
 describe("FilesystemHandler Unit Tests", () => {
-    let handler;
+    let handler: FilesystemHandler;
+
     beforeEach(() => {
         handler = new FilesystemHandler();
     });

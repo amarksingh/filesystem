@@ -1,45 +1,55 @@
-const { BlobServiceClient, StorageSharedKeyCredential } = require("@azure/storage-blob");
-const kContainer = Symbol('container')
-const kConnection = Symbol('connection')
+import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
+
+const kContainer: unique symbol = Symbol('container');
+const kConnection: unique symbol = Symbol('connection');
+
 /**
  * Class AzureClient.
  */
 class AzureClient {
+    [kContainer]: any;
+    [kConnection]: any;
+
     /**
      * Create a new instance.
-     * @param {*} $config
+     *
+     * @param $config - Azure connection configuration.
      */
     constructor($config: Record<string, any>) {
         this[kConnection] = this.getConnection($config['account'], Buffer.from($config['key'], 'base64').toString('ascii'));
         this[kContainer] = this.getContainer($config['container']);
-        return this
+        return this;
     }
+
     /**
      * getConnection method.
-     * @param {*} account
-     * @param {*} key
-     * @returns {any}
+     *
+     * @param account - Storage account name.
+     * @param key - Storage account key.
+     * @returns BlobServiceClient instance or existing connection.
      */
-    getConnection(account: any, key: string) {
+    getConnection(account?: string, key?: string): any {
         if (account || key) {
             return new BlobServiceClient(
                 `https://${account}.blob.core.windows.net`,
-                new StorageSharedKeyCredential(account, key)
+                new StorageSharedKeyCredential(account!, key!)
             );
         }
-        return this[kConnection]
-    }
-    /**
-     * getContainer method.
-     * @param {*} container
-     * @returns {any}
-     */
-    getContainer(container: any) {
-        if (container) {
-            return this[kConnection].getContainerClient(container)
-        }
-        return this[kContainer]
+        return this[kConnection];
     }
 
+    /**
+     * getContainer method.
+     *
+     * @param container - Container name.
+     * @returns ContainerClient instance or default container.
+     */
+    getContainer(container?: string): any {
+        if (container) {
+            return this[kConnection].getContainerClient(container);
+        }
+        return this[kContainer];
+    }
 }
-module.exports = AzureClient
+
+export = AzureClient;

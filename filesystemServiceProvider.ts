@@ -1,6 +1,7 @@
-const ServiceProvider = require('@ostro/support/serviceProvider');
-const FilesystemManager = require('./filesystemManager');
-const Filesystem = require('./filesystem');
+import ServiceProvider from '@ostro/support/serviceProvider';
+import FilesystemManager from './filesystemManager';
+import Filesystem from './filesystem';
+
 /**
  * Class filesystemServiceProvider.
  */
@@ -8,73 +9,68 @@ class filesystemServiceProvider extends ServiceProvider {
 
     /**
      * register method.
-     * @returns {any}
      */
-    register() {
+    register(): void {
         this.registerNativeFilesystem();
-
         this.registerFlysystem();
     }
 
     /**
      * registerNativeFilesystem method.
-     * @returns {any}
      */
-    registerNativeFilesystem() {
-        this.$app.singleton('files', function() {
-            return new Filesystem;
+    registerNativeFilesystem(): void {
+        this.$app.singleton('files', function(): Filesystem {
+            return new Filesystem();
         });
     }
 
     /**
      * registerFlysystem method.
-     * @returns {any}
      */
-    registerFlysystem() {
+    registerFlysystem(): void {
         this.registerManager();
 
-        this.$app.singleton('filesystem.disk', ($app) => {
+        this.$app.singleton('filesystem.disk', ($app: any): any => {
             return $app['filesystem'].disk(this.getDefaultDriver());
         });
 
-        this.$app.singleton('filesystem.cloud', ($app) => {
+        this.$app.singleton('filesystem.cloud', ($app: any): any => {
             return $app['filesystem'].disk(this.getCloudDriver());
         });
     }
 
     /**
      * registerManager method.
-     * @returns {any}
      */
-    registerManager() {
-        this.$app.singleton('filesystem', function($app) {
+    registerManager(): void {
+        this.$app.singleton('filesystem', function($app: any): FilesystemManager {
             return new FilesystemManager($app);
         });
     }
 
     /**
      * getDefaultDriver method.
-     * @returns {any}
+     *
+     * @returns Default driver name.
      */
-    getDefaultDriver() {
+    getDefaultDriver(): string {
         return this.$app['config']['filesystems.default'];
     }
 
     /**
      * getCloudDriver method.
-     * @returns {any}
+     *
+     * @returns Cloud driver name.
      */
-    getCloudDriver() {
+    getCloudDriver(): string {
         return this.$app['config']['filesystems.cloud'];
     }
-    
+
     /**
      * boot method.
-     * @returns {any}
      */
-    boot() {
-
+    boot(): void {
     }
-
 }
-module.exports = filesystemServiceProvider
+
+export = filesystemServiceProvider;

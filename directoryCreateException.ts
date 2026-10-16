@@ -1,21 +1,27 @@
-const DirectoryCreateExceptionContract = require('@ostro/contracts/filesystem/directoryCreateException')
+import DirectoryCreateExceptionContract from '@ostro/contracts/filesystem/directoryCreateException';
+
 /**
  * Class DirectoryCreateException.
  */
 class DirectoryCreateException extends DirectoryCreateExceptionContract {
+    name: string;
+    message: string;
+    errors: unknown;
+    statusCode: number;
+
     /**
      * Create a new instance.
-     * @param {*} errors
+     *
+     * @param errors - Error details or message.
      */
-    constructor(errors: any) {
+    constructor(errors: unknown) {
         super();
-
         this.name = this.constructor.name;
         this.message = 'Unable to create directory';
         this.errors = errors;
         this.statusCode = 404;
         Error.captureStackTrace(this, this.constructor);
-
     }
 }
-module.exports = DirectoryCreateException
+
+export = DirectoryCreateException;

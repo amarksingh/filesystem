@@ -1,21 +1,28 @@
-const fileNotFoundExceptionContract = require('@ostro/contracts/filesystem/fileNotFoundException')
+import FileNotFoundExceptionContract from '@ostro/contracts/filesystem/fileNotFoundException';
+
 /**
  * Class FileNotFoundException.
  */
-class FileNotFoundException extends fileNotFoundExceptionContract {
+class FileNotFoundException extends FileNotFoundExceptionContract {
+    name: string;
+    message: string;
+    errors: unknown;
+    statusCode: number;
+
     /**
      * Create a new instance.
-     * @param {*} errors
-     * @param {*} path
+     *
+     * @param errors - Error details or message.
+     * @param path - File path that failed to delete.
      */
-    constructor(errors: any, path: string) {
+    constructor(errors: unknown, path?: string) {
         super();
         this.name = this.constructor.name;
         this.message = 'Unable to delete ';
         this.errors = errors;
         this.statusCode = 500;
         Error.captureStackTrace(this, this.constructor);
-
     }
 }
-module.exports = FileNotFoundException
+
+export = FileNotFoundException;

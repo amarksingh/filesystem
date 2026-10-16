@@ -1,46 +1,53 @@
-const path = require('path')
-const FileNotFoundException = require('./fileNotFoundException')
-const FileDeleteException = require('./fileDeleteException')
-const FileUploadException = require('./fileUploadException')
-const DirectoryCreateException = require('./directoryCreateException')
-const kAdapter = Symbol('adapter')
-const kHandler = Symbol('handler')
+import path from 'path';
+import FileNotFoundException from './fileNotFoundException';
+import FileDeleteException from './fileDeleteException';
+import FileUploadException from './fileUploadException';
+import DirectoryCreateException from './directoryCreateException';
+
+const kAdapter: unique symbol = Symbol('adapter');
+const kHandler: unique symbol = Symbol('handler');
+
 /**
  * Class FilesystemAdapter.
  */
 class FilesystemAdapter {
+    [kAdapter]: any;
+    [kHandler]: any;
+
     /**
      * Create a new instance.
-     * @param {*} $adapter
-     * @param {*} $handler
+     *
+     * @param $adapter - Adapter instance.
+     * @param $handler - Callback handler instance.
      */
-    constructor($adapter: any, $handler: Function) {
+    constructor($adapter: any, $handler: any) {
         this[kAdapter] = $adapter;
         this[kHandler] = $handler;
     }
 
     /**
      * exists method.
-     * @param {*} $path
-     * @param {*} options
-     * @returns {any}
+     *
+     * @param $path - File path to check.
+     * @param options - Check options.
+     * @returns Promise resolving to boolean.
      */
-    exists($path: string, options: Record<string, any>) {
-
-        return new Promise((resolve, reject) => {
-            this[kAdapter].has($path, options, (err, data, basePath) => {
-                this[kHandler].exists(null, (err ? false : true), resolve, $path, options, basePath)
-            })
-        })
+    exists($path: string, options?: Record<string, any>): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            this[kAdapter].has($path, options, (err: any, data: any, basePath: string) => {
+                this[kHandler].exists(null, err ? false : true, resolve, $path, options, basePath);
+            });
+        });
     }
 
     /**
      * path method.
-     * @param {*} $path
-     * @returns {any}
+     *
+     * @param $path - Relative path.
+     * @returns Resolved path.
      */
-    path($path: string) {
-        if (typeof this[kAdapter].applyPathPrefix == "function") {
+    path($path: string): string {
+        if (typeof this[kAdapter].applyPathPrefix == 'function') {
             return this[kAdapter].applyPathPrefix($path);
         }
         return this[kAdapter].getAdapter().getPathPrefix()[$path];
@@ -48,117 +55,122 @@ class FilesystemAdapter {
 
     /**
      * get method.
-     * @param {*} $path
-     * @param {*} options
-     * @returns {any}
+     *
+     * @param $path - File path to read.
+     * @param options - Read options.
+     * @returns Promise resolving to file contents.
      */
-    get($path: string, options: Record<string, any>) {
-
+    get($path: string, options?: Record<string, any>): Promise<any> {
         return new Promise((resolve, reject) => {
-            this[kAdapter].read($path, options, (err, data, basePath) => {
+            this[kAdapter].read($path, options, (err: any, data: any, basePath: string) => {
                 if (err) {
-                    this[kHandler].get(new FileNotFoundException(err), null, reject, $path, options, basePath)
+                    this[kHandler].get(new FileNotFoundException(err), null, reject, $path, options, basePath);
                 } else {
-                    this[kHandler].get(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath)
+                    this[kHandler].get(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath);
                 }
-            })
-        })
+            });
+        });
     }
 
     /**
      * delete method.
-     * @param {*} $path
-     * @param {*} rest
-     * @returns {any}
+     *
+     * @param $path - File path to delete.
+     * @param rest - Optional callback and options.
+     * @returns Promise or adapter result.
      */
-    delete($path: string, ...rest: any[]) {
-        rest = Array.from(rest)
-        let callback = rest.find(arg => typeof arg == 'function')
-        let options = rest.find(arg => typeof arg == 'object') || {}
-        if (callback)
-            return this[kAdapter].delete($path, options, callback)
-        else {
+    delete($path: string, ...rest: any[]): any {
+        const restArr = Array.from(rest);
+        const callback = restArr.find(arg => typeof arg == 'function');
+        const options = restArr.find(arg => typeof arg == 'object') || {};
+        if (callback) {
+            return this[kAdapter].delete($path, options, callback);
+        } else {
             return new Promise((resolve, reject) => {
-                this[kAdapter].delete($path, options, (err, data, basePath) => {
+                this[kAdapter].delete($path, options, (err: any, data: any, basePath: string) => {
                     if (err) {
-                        this[kHandler].delete(new FileDeleteException(err), null, reject, $path, options, basePath)
+                        this[kHandler].delete(new FileDeleteException(err), null, reject, $path, options, basePath);
                     } else {
-                        this[kHandler].delete(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath)
+                        this[kHandler].delete(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath);
                     }
-                })
-            })
+                });
+            });
         }
     }
 
     /**
      * makeDirectory method.
-     * @param {*} $path
-     * @param {*} options
-     * @returns {any}
+     *
+     * @param $path - Directory path to create.
+     * @param options - Directory options.
+     * @returns Promise resolving on completion.
      */
-    makeDirectory($path: string, options: Record<string, any>) {
+    makeDirectory($path: string, options?: Record<string, any>): Promise<any> {
         return new Promise((resolve, reject) => {
-            this[kAdapter].createDir($path, options, (err, data, basePath) => {
+            this[kAdapter].createDir($path, options, (err: any, data: any, basePath: string) => {
                 if (err) {
-                    this[kHandler].createDir(new DirectoryCreateException(err), null, reject, $path, options, basePath)
+                    this[kHandler].createDir(new DirectoryCreateException(err), null, reject, $path, options, basePath);
                 } else {
-                    this[kHandler].createDir(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath)
+                    this[kHandler].createDir(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath);
                 }
-            })
-        })
+            });
+        });
     }
 
     /**
      * put method.
-     * @param {*} $path
-     * @param {*} content
-     * @param {*} options
-     * @returns {any}
+     *
+     * @param $path - File path to write.
+     * @param content - File contents.
+     * @param options - Write options.
+     * @returns Promise resolving on completion.
      */
-    put($path: string, content: any, options: Record<string, any> = {}) {
-
+    put($path: string, content: any, options: Record<string, any> = {}): Promise<any> {
         return new Promise((resolve, reject) => {
-            this[kAdapter].write($path, content, options, (err, data, basePath) => {
+            this[kAdapter].write($path, content, options, (err: any, data: any, basePath: string) => {
                 if (err) {
-                    this[kHandler].delete(new FileUploadException(err), null, reject, $path, options, basePath, content)
+                    this[kHandler].delete(new FileUploadException(err), null, reject, $path, options, basePath, content);
                 } else {
-                    this[kHandler].put(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath)
+                    this[kHandler].put(null, (typeof data == 'function' ? data() : data), resolve, $path, options, basePath);
                 }
-            })
-        })
+            });
+        });
     }
 
     /**
      * putFile method.
-     * @param {*} $path
-     * @param {*} $file
-     * @param {*} $options
-     * @returns {any}
+     *
+     * @param $path - Directory path.
+     * @param $file - File object.
+     * @param $options - Write options.
+     * @returns Promise resolving to write result.
      */
-    putFile($path: string, $file: any, $options: Record<string, any> = {}) {
+    putFile($path: string, $file: any, $options: Record<string, any> = {}): Promise<any> {
         return this.putFileAs($path, $file, $file.getHashname(), $options);
     }
 
     /**
      * putFileAs method.
-     * @param {*} $path
-     * @param {*} $file
-     * @param {*} $name
-     * @param {*} $options
-     * @returns {any}
+     *
+     * @param $path - Directory path.
+     * @param $file - File object.
+     * @param $name - Filename.
+     * @param $options - Write options.
+     * @returns Promise resolving to write result.
      */
-    putFileAs($path: string, $file: any, $name: string, $options: Record<string, any> = {}) {
-        $path = path.join($path, $name)
+    putFileAs($path: string, $file: any, $name: string, $options: Record<string, any> = {}): Promise<any> {
+        $path = path.join($path, $name);
         return this.put($path, $file.getBufferData(), $options);
     }
 
     /**
      * getAdapter method.
-     * @returns {any}
+     *
+     * @returns Underlying adapter instance.
      */
-    getAdapter() {
+    getAdapter(): any {
         return this[kAdapter];
     }
-
 }
-module.exports = FilesystemAdapter
+
+export = FilesystemAdapter;

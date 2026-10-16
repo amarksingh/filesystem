@@ -1,24 +1,32 @@
-const util = require('util');
-require('@ostro/support/helpers')
-const Manager = require('@ostro/support/manager')
-const InvalidArgumentException = require('./invalidArgumentException')
-const FilesystemAdapter = require('./filesystemAdapter')
-const callbackHandler = require('./callbackHandler')
-const kHandler = Symbol('handler')
+import util from 'util';
+import '@ostro/support/helpers';
+import Manager from '@ostro/support/manager';
+import InvalidArgumentException from './invalidArgumentException';
+import FilesystemAdapter from './filesystemAdapter';
+import callbackHandler from './callbackHandler';
+import LocalAdapter from './adapter/local';
+import AzureAdapter from './adapter/azure';
+import S3Adapter from './adapter/s3';
+import AzureClient from './clients/azure';
+import S3Client from './clients/s3';
+
+const kHandler: unique symbol = Symbol('handler');
+
 /**
  * Class FileSystemManager.
  */
 class FileSystemManager extends Manager {
-
-    $type = 'filesystem';
+    $type: string = 'filesystem';
+    [kHandler]: any;
 
     /**
      * Create a new instance.
-     * @param {*} $app
+     *
+     * @param $app - Application instance.
      */
     constructor($app: any) {
-        super($app)
-        this[kHandler] = this.getConfig('handler')
+        super($app);
+        this[kHandler] = this.getConfig('handler');
         if (!this[kHandler]) {
             this[kHandler] = new callbackHandler();
         } else if (typeof this[kHandler] == 'function') {
@@ -37,121 +45,128 @@ class FileSystemManager extends Manager {
 
     /**
      * drive method.
-     * @param {*} $name
-     * @returns {any}
+     *
+     * @param $name - Driver or disk name.
+     * @returns FilesystemAdapter instance.
      */
-    drive($name: any = null) {
+    drive($name: string | null = null): any {
         return this.driver($name);
     }
 
     /**
      * disk method.
-     * @param {*} name
-     * @returns {any}
+     *
+     * @param name - Disk name.
+     * @returns FilesystemAdapter instance.
      */
-    disk(name: any = null) {
-        return this.driver(name)
+    disk(name: string | null = null): any {
+        return this.driver(name);
     }
 
     /**
      * cloud method.
-     * @returns {any}
+     *
+     * @returns Default cloud FilesystemAdapter instance.
      */
-    cloud() {
-        var name = this.getDefaultCloudDriver();
-        return this.disk(name)
+    cloud(): any {
+        const name = this.getDefaultCloudDriver();
+        return this.disk(name);
     }
 
     /**
      * resolve method.
-     * @param {*} $name
-     * @returns {any}
+     *
+     * @param $name - Disk name to resolve.
+     * @returns Resolved FilesystemAdapter instance.
      */
-    resolve($name: string) {
-        var $config = this.getConfig($name);
+    resolve($name: string): any {
+        const $config = this.getConfig($name);
         if (!$config) {
             throw new InvalidArgumentException("Disk [" + $name + "] was not available.");
         }
-        return super.resolve($name, $config)
+        return super.resolve($name, $config);
     }
-
 
     /**
      * createLocalDriver method.
-     * @param {*} $config
-     * @returns {any}
+     *
+     * @param $config - Driver configuration.
+     * @returns FilesystemAdapter for local storage.
      */
-    createLocalDriver($config: Record<string, any>) {
-        return this.adapt(new(require('./adapter/local'))($config['root'], $config), $config);
+    createLocalDriver($config: Record<string, any>): FilesystemAdapter {
+        return this.adapt(new LocalAdapter($config['root'], $config), $config);
     }
 
     /**
      * createAzureDriver method.
-     * @param {*} $config
-     * @returns {any}
+     *
+     * @param $config - Driver configuration.
+     * @returns FilesystemAdapter for Azure storage.
      */
-    createAzureDriver($config: Record<string, any>) {
-        return this.adapt(new(require('./adapter/azure'))(new(require('./clients/azure'))($config), $config), $config);
+    createAzureDriver($config: Record<string, any>): FilesystemAdapter {
+        return this.adapt(new AzureAdapter(new AzureClient($config), $config), $config);
     }
 
     /**
      * createS3Driver method.
-     * @param {*} $config
-     * @returns {any}
+     *
+     * @param $config - Driver configuration.
+     * @returns FilesystemAdapter for S3 storage.
      */
-    createS3Driver($config: Record<string, any>) {
-        return this.adapt(new(require('./adapter/s3'))(new(require('./clients/s3'))($config), $config), $config);
+    createS3Driver($config: Record<string, any>): FilesystemAdapter {
+        return this.adapt(new S3Adapter(new S3Client($config), $config), $config);
     }
 
     /**
      * adapt method.
-     * @param {*} adapter
-     * @param {*} config
-     * @returns {any}
+     *
+     * @param adapter - Core adapter instance.
+     * @param config - Driver configuration.
+     * @returns FilesystemAdapter wrapping core adapter.
      */
-    adapt(adapter: any, config: Record<string, any>) {
+    adapt(adapter: any, config: Record<string, any>): FilesystemAdapter {
         return new FilesystemAdapter(adapter, this[kHandler]);
     }
 
     /**
      * getConfig method.
-     * @param {*} name
-     * @returns {any}
+     *
+     * @param name - Disk configuration key.
+     * @returns Configuration object.
      */
-    getConfig(name: string) {
+    getConfig(name: string): any {
         return super.getConfig(`disks.${name}`) || super.getConfig(name);
     }
 
     /**
      * getDefaultCloudDriver method.
-     * @returns {any}
+     *
+     * @returns Name of default cloud driver.
      */
-    getDefaultCloudDriver() {
+    getDefaultCloudDriver(): string {
         return super.getConfig('cloud');
     }
 
     /**
      * registerToRequest method.
-     * @param {*} FileRequest
-     * @returns {any}
+     *
+     * @param FileRequest - Request constructor to extend.
      */
-    registerToRequest(FileRequest: any) {
-        let self = this
-        FileRequest.prototype.store = function(dir, disk, options) {
+    registerToRequest(FileRequest: any): void {
+        const self = this;
+        FileRequest.prototype.store = function(dir?: string, disk?: any, options?: any) {
             dir = dir || '';
             options = typeof disk == 'object' ? disk : (options || {});
             disk = typeof disk == 'object' ? '' : (disk || '');
-            return self.disk((disk || self.getDefaultDriver())).putFile(dir, this, options)
-        }
-        FileRequest.prototype.storeAs = function(dir, filename, disk, options) {
+            return self.disk((disk || self.getDefaultDriver())).putFile(dir, this, options);
+        };
+        FileRequest.prototype.storeAs = function(dir?: string, filename?: string, disk?: any, options?: any) {
             dir = dir || '';
             options = typeof disk == 'object' ? disk : (options || {});
             disk = typeof disk == 'object' ? '' : (disk || '');
-            return self.disk((disk || self.getDefaultDriver())).putFileAs(dir, this, filename, options)
-        }
-
+            return self.disk((disk || self.getDefaultDriver())).putFileAs(dir, this, filename, options);
+        };
     }
-
 }
 
-module.exports = FileSystemManager
+export = FileSystemManager;

@@ -4,105 +4,107 @@
 class FilesystemHandler {
     /**
      * exists method.
-     * @param {*} error
-     * @param {*} data
-     * @param {*} callback
-     * @param {*} path
-     * @param {*} options
-     * @param {*} basePath
-     * @returns {any}
+     *
+     * @param error - Potential error.
+     * @param data - Existence check result.
+     * @param callback - Resolution callback.
+     * @param path - File path.
+     * @param options - Options object.
+     * @param basePath - Base path.
      */
-    exists(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
+    exists(error: unknown, data: Record<string, any> | boolean | null, callback: (res: any) => void, path?: string, options?: Record<string, any>, basePath?: any): void {
         if (error) {
-            callback(error)
+            callback(error);
         } else {
-            callback(data)
+            callback(data);
         }
-
     }
 
     /**
      * get method.
-     * @param {*} error
-     * @param {*} data
-     * @param {*} callback
-     * @param {*} path
-     * @param {*} options
-     * @param {*} basePath
-     * @returns {any}
+     *
+     * @param error - Potential error.
+     * @param data - Retrieved data.
+     * @param callback - Resolution callback.
+     * @param path - File path.
+     * @param options - Options object.
+     * @param basePath - Base path.
      */
-    get(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
+    get(error: unknown, data: any, callback: (res: any) => void, path?: string, options?: Record<string, any>, basePath?: any): void {
         if (error) {
-            callback(error)
+            callback(error);
         } else {
-            callback(data)
+            callback(data);
         }
     }
 
     /**
      * delete method.
-     * @param {*} error
-     * @param {*} data
-     * @param {*} callback
-     * @param {*} path
-     * @param {*} options
-     * @param {*} basePath
-     * @returns {any}
+     *
+     * @param error - Potential error.
+     * @param data - Deletion result.
+     * @param callback - Resolution callback.
+     * @param path - File path.
+     * @param options - Options object.
+     * @param basePath - Base path.
      */
-    delete(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
+    delete(error: unknown, data: any, callback: (res: any) => void, path?: string, options?: Record<string, any>, basePath?: any): void {
         if (error) {
-            callback(error)
+            callback(error);
         } else {
-            callback(data)
+            callback(data);
         }
     }
 
     /**
      * put method.
-     * @param {*} error
-     * @param {*} data
-     * @param {*} callback
-     * @param {*} path
-     * @param {*} options
-     * @param {*} basePath
-     * @returns {any}
+     *
+     * @param error - Potential error.
+     * @param data - Write result.
+     * @param callback - Resolution callback.
+     * @param path - File path.
+     * @param options - Options object.
+     * @param basePath - Base path.
      */
-    put(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>, basePath: any) {
+    put(error: unknown, data: any, callback: (res: any) => void, path?: string, options?: Record<string, any>, basePath?: any): void {
         if (error) {
-            callback(error)
+            callback(error);
         } else {
-            callback(data)
+            callback(data);
         }
     }
+
     /**
      * global method.
-     * @param {*} error
-     * @param {*} data
-     * @param {*} callback
-     * @param {*} path
-     * @param {*} options
-     * @returns {any}
+     *
+     * @param error - Potential error.
+     * @param data - Global data.
+     * @param callback - Resolution callback.
+     * @param path - File path.
+     * @param options - Options object.
      */
-    global(error: any, data: Record<string, any>, callback: Function, path: string, options: Record<string, any>) {
+    global(error: unknown, data: any, callback: (res: any) => void, path?: string, options?: Record<string, any>): void {
         if (error) {
-            callback(error)
+            callback(error);
         } else {
-            callback(data)
+            callback(data);
         }
     }
+
     /**
      * createDir method.
-     * @param {*} error
-     * @param {*} data
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param error - Potential error.
+     * @param data - Creation result.
+     * @param callback - Resolution callback.
      */
-    createDir(error: any, data: Record<string, any>, callback: Function) {
+    createDir(error: unknown, data: any, callback: (res: any) => void): void {
         if (error) {
-            callback(error)
+            callback(error);
         } else {
-            callback(true)
+            callback(true);
         }
     }
 }
-module.exports = FilesystemHandler
+
+export = FilesystemHandler;

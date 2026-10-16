@@ -1,185 +1,199 @@
-const path = require('path')
-const url = require('url')
-const { ensureDir } = require('fs-extra')
-const kConfig = Symbol('config')
-const kRootPath = Symbol('rootPath')
-const kRootUrlPath = Symbol('rootUrlPath')
+import path from 'path';
+import url from 'url';
+import { ensureDir } from 'fs-extra';
+
+const kConfig: unique symbol = Symbol('config');
+const kRootPath: unique symbol = Symbol('rootPath');
+const kRootUrlPath: unique symbol = Symbol('rootUrlPath');
+
 /**
  * Class CoreAdapter.
  */
 class CoreAdapter {
+    [kConfig]: Record<string, any> | null = null;
+    [kRootPath]: string = '';
+    [kRootUrlPath]: string = '';
+
     /**
      * setConfig method.
-     * @param {*} config
-     * @returns {any}
+     *
+     * @param config - Configuration object.
      */
-    setConfig(config: Record<string, any>) {
-        this[kConfig] = config
+    setConfig(config: Record<string, any>): void {
+        this[kConfig] = config;
     }
 
     /**
      * getConfig method.
-     * @returns {any}
+     *
+     * @returns Configuration object or null.
      */
-    getConfig() {
-        return this[kConfig] || null
+    getConfig(): Record<string, any> | null {
+        return this[kConfig] || null;
     }
 
     /**
      * setPathPrefix method.
-     * @param {*} root
-     * @returns {any}
+     *
+     * @param root - Root directory path prefix.
      */
-    setPathPrefix(root: any) {
-        this[kRootPath] = root
+    setPathPrefix(root: string): void {
+        this[kRootPath] = root;
     }
 
     /**
      * setUrlPrefix method.
-     * @param {*} root
-     * @returns {any}
+     *
+     * @param root - Root URL prefix.
      */
-    setUrlPrefix(root: any) {
-        this[kRootUrlPath] = root
+    setUrlPrefix(root: string): void {
+        this[kRootUrlPath] = root;
     }
 
     /**
      * applyPathPrefix method.
-     * @param {*} dest
-     * @returns {any}
+     *
+     * @param dest - Target path.
+     * @returns Resolved absolute path.
      */
-    applyPathPrefix(dest: any) {
-        return path.resolve(path.join(this[kRootPath], path.join('/', path.normalize(dest))))
+    applyPathPrefix(dest: string): string {
+        return path.resolve(path.join(this[kRootPath], path.join('/', path.normalize(dest))));
     }
 
     /**
      * applyUrlPrefix method.
-     * @param {*} dest
-     * @returns {any}
+     *
+     * @param dest - Target path or URL segment.
+     * @returns Resolved URL string.
      */
-    applyUrlPrefix(dest: any) {
-        return url.resolve(([this[kRootUrlPath], (dest || '')].join('/')), '')
+    applyUrlPrefix(dest?: string): string {
+        return url.resolve(([this[kRootUrlPath], (dest || '')].join('/')), '');
     }
 
     /**
      * ensureDirectory method.
-     * @param {*} dir
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param dir - Directory path to ensure exists.
+     * @param callback - Completion callback.
      */
-    ensureDirectory(dir: any, callback: Function) {
-        ensureDir(dir, callback)
+    ensureDirectory(dir: string, callback: (err?: any) => void): void {
+        ensureDir(dir, callback);
     }
 
     /**
      * parsePath method.
-     * @param {*} dest
-     * @returns {any}
+     *
+     * @param dest - Path to parse.
+     * @returns Parsed path object.
      */
-    parsePath(dest: any) {
-        return path.parse(dest)
+    parsePath(dest: string): path.ParsedPath {
+        return path.parse(dest);
     }
 
     /**
      * dirname method.
-     * @param {*} dest
-     * @returns {any}
+     *
+     * @param dest - Path to get directory name of.
+     * @returns Directory path.
      */
-    dirname(dest: any) {
-        return this.parsePath(dest).dir
+    dirname(dest: string): string {
+        return this.parsePath(dest).dir;
     }
 
     /**
      * getContent method.
-     * @param {*} content
-     * @returns {any}
+     *
+     * @param content - Content or array of contents.
+     * @returns Single content element.
      */
-    getContent(content: any) {
-        if (Array.isArray(content))
-            return content[0]
-        else
-            return content
+    getContent<T = unknown>(content: T | T[]): T {
+        if (Array.isArray(content)) {
+            return content[0];
+        } else {
+            return content;
+        }
     }
 
     /**
      * getBufferData method.
-     * @param {*} content
-     * @returns {any}
+     *
+     * @param content - Content containing buffer.
+     * @returns Buffer instance.
      */
-    getBufferData(content: any) {
-        return this.getContent(content).buffer
+    getBufferData(content: any): any {
+        return this.getContent(content).buffer;
     }
+
     /**
      * move method.
-     * @param {*} path
-     * @param {*} newpath
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param path - Source path.
+     * @param newpath - Destination path.
+     * @param callback - Result callback.
      */
-    move(path: string, newpath: any, callback: Function) {
-        callback(this.formatError({ message: 'there was no such functionality available.' }), {})
+    move(path: string, newpath: any, callback: Function): void {
+        callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
     /**
      * delete method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - Target path.
+     * @param options - Deletion options.
+     * @param callback - Result callback.
      */
-    delete($path: string, options: Record<string, any> = {}, callback: Function) {
-        callback(this.formatError({ message: 'there was no such functionality available.' }), {})
-
+    delete($path: string, options: Record<string, any> = {}, callback: Function): void {
+        callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
     /**
      * has method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - Target path.
+     * @param options - Check options.
+     * @param callback - Result callback.
      */
-    has($path: string, options: Record<string, any> = {}, callback: Function) {
-        callback(this.formatError({ message: 'there was no such functionality available.' }), {})
-
+    has($path: string, options: Record<string, any> = {}, callback: Function): void {
+        callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
     /**
      * write method.
-     * @param {*} $path
-     * @param {*} $contents
-     * @param {*} options
-     * @param {*} rest
-     * @returns {any}
+     *
+     * @param $path - Target path.
+     * @param $contents - Contents to write.
+     * @param options - Write options.
+     * @param rest - Additional arguments including callback.
      */
-    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]) {
-        let callback = Array.from(rest).find(arg => typeof arg == "function") || (typeof options == "function" ? options : () => {});
-        callback(this.formatError({ message: 'there was no such functionality available.' }), {})
-
+    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]): void {
+        const callback: Function = Array.from(rest).find(arg => typeof arg == 'function') || (typeof options == 'function' ? options : () => {});
+        callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
     /**
      * read method.
-     * @param {*} $path
-     * @param {*} options
-     * @param {*} callback
-     * @returns {any}
+     *
+     * @param $path - Target path.
+     * @param options - Read options.
+     * @param callback - Result callback.
      */
-    read($path: string, options: Record<string, any> = {}, callback: Function) {
-        callback(this.formatError({ message: 'there was no such functionality available.' }), {})
-
+    read($path: string, options: Record<string, any> = {}, callback: Function): void {
+        callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
+
     /**
      * formatError method.
-     * @param {*} err
-     * @returns {any}
+     *
+     * @param err - Inner error.
+     * @returns Formatted error object.
      */
-    formatError(err: any) {
+    formatError(err: unknown): { message: string; errors: unknown; status: number } {
         return {
             'message': 'Storage Error',
             'errors': err,
             'status': 500
-        }
+        };
     }
 }
-module.exports = CoreAdapter
+
+export = CoreAdapter;

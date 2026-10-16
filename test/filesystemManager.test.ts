@@ -1,12 +1,23 @@
-const FilesystemManager = require("../filesystemManager");
-const FilesystemServiceProvider = require("../filesystemServiceProvider");
-const Filesystem = require("../filesystem");
-const path = require("path");
+jest.mock("aws-sdk", () => ({
+    S3: jest.fn().mockImplementation(() => ({}))
+}), { virtual: true });
+
+jest.mock("@azure/storage-blob", () => ({
+    BlobServiceClient: jest.fn().mockImplementation(() => ({
+        getContainerClient: jest.fn()
+    })),
+    StorageSharedKeyCredential: jest.fn()
+}), { virtual: true });
+
+import FilesystemManager from "../filesystemManager";
+import FilesystemServiceProvider from "../filesystemServiceProvider";
+import Filesystem from "../filesystem";
+import path from "path";
 
 describe("FilesystemManager and ServiceProvider Unit Tests", () => {
-    let appMock;
-    let manager;
-    let configData;
+    let appMock: any;
+    let manager: any;
+    let configData: any;
 
     beforeEach(() => {
         configData = {
@@ -37,7 +48,7 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
         };
 
         appMock = {
-            make: (b) => {
+            make: (b: string) => {
                 if (b === "config") return configData;
                 return null;
             },
@@ -60,22 +71,11 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
     });
 
     test("cloud() resolves configured cloud driver", () => {
-        jest.mock("aws-sdk", () => ({
-            S3: jest.fn().mockImplementation(() => ({}))
-        }), { virtual: true });
-
         const cloudDisk = manager.cloud();
         expect(cloudDisk).toBeDefined();
     });
 
     test("createAzureDriver() resolves azure adapter", () => {
-        jest.mock("@azure/storage-blob", () => ({
-            BlobServiceClient: jest.fn().mockImplementation(() => ({
-                getContainerClient: jest.fn()
-            })),
-            StorageSharedKeyCredential: jest.fn()
-        }), { virtual: true });
-
         const azureDisk = manager.disk("azure");
         expect(azureDisk).toBeDefined();
     });
@@ -86,6 +86,9 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
 
     test("registerToRequest() binds store and storeAs methods", async () => {
         class MockFileRequest {
+            hashname: string;
+            buffer: Buffer;
+
             constructor() {
                 this.hashname = "test.png";
                 this.buffer = Buffer.from("image");
@@ -99,7 +102,7 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
         }
 
         manager.registerToRequest(MockFileRequest);
-        const req = new MockFileRequest();
+        const req: any = new MockFileRequest();
         expect(typeof req.store).toBe("function");
         expect(typeof req.storeAs).toBe("function");
 
@@ -118,13 +121,13 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
     });
 
     test("FilesystemServiceProvider registers services", () => {
-        const singletons = {};
+        const singletons: Record<string, any> = {};
         const app = {
-            make: (b) => {
+            make: (b: string) => {
                 if (b === "config") return configData;
                 return null;
             },
-            singleton: (name, factory) => {
+            singleton: (name: string, factory: any) => {
                 singletons[name] = factory;
             },
             config: configData
@@ -141,16 +144,17 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
         const mgr = singletons["filesystem"](app);
         expect(mgr).toBeInstanceOf(FilesystemManager);
 
-        app["filesystem"] = mgr;
+        (app as any)["filesystem"] = mgr;
         expect(singletons["filesystem.disk"](app)).toBeDefined();
         expect(singletons["filesystem.cloud"](app)).toBeDefined();
     });
+
     test("instantiates manager with handler as class and as object", () => {
         class CustomHandlerClass {
             customMethod() {}
         }
         const appWithClassHandler = {
-            make: (b) => ({
+            make: (b: string) => ({
                 filesystem: {
                     default: "local",
                     handler: CustomHandlerClass,
@@ -163,7 +167,7 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
 
         const customObj = { customProp: true };
         const appWithObjHandler = {
-            make: (b) => ({
+            make: (b: string) => ({
                 filesystem: {
                     default: "local",
                     handler: customObj,
@@ -175,10 +179,11 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
         expect(mgrObj).toBeDefined();
 
         class NonObjectClass {
+            prop: number;
             constructor() { this.prop = 1; }
         }
         const appWithCustomInst = {
-            make: (b) => ({
+            make: (b: string) => ({
                 filesystem: {
                     default: "local",
                     handler: new NonObjectClass(),
@@ -189,6 +194,7 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
         const mgrCustomInst = new FilesystemManager(appWithCustomInst);
         expect(mgrCustomInst).toBeDefined();
     });
+
     test("drive() with null or undefined uses default driver", () => {
         expect(manager.drive()).toBeDefined();
         expect(manager.drive(null)).toBeDefined();
@@ -200,7 +206,7 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
             getBufferData() { return Buffer.from("jpg"); }
         }
         manager.registerToRequest(MockFileReq);
-        const req = new MockFileReq();
+        const req: any = new MockFileReq();
         const r1 = await req.store();
         expect(r1.type).toBe("file");
         const r2 = await req.storeAs("", "custom.jpg");
@@ -209,7 +215,7 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
 
     test("instantiates manager with handler as plain string/number fallback and tests store/storeAs disk string vs object", async () => {
         const appFallback = {
-            make: (b) => ({
+            make: (b: string) => ({
                 filesystem: {
                     default: "local",
                     handler: "invalid_handler_type",
@@ -225,7 +231,7 @@ describe("FilesystemManager and ServiceProvider Unit Tests", () => {
             getBufferData() { return Buffer.from("data"); }
         }
         manager.registerToRequest(MockFileReq);
-        const req = new MockFileReq();
+        const req: any = new MockFileReq();
 
         // disk passed as string "local", options passed as object { opt: 1 }
         const r1 = await req.store("dir", "local", { opt: 1 });
