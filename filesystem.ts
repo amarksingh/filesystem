@@ -316,13 +316,16 @@ class Filesystem extends FilesystemContract implements IFilesystem {
      * @returns Matching file paths.
      */
     async glob($pattern: string): Promise<string[]> {
+        if (!$pattern || $pattern === '.') {
+            return [];
+        }
         const dir = path.dirname($pattern);
         const base = path.basename($pattern);
         let globPattern = '*';
         if (base && base !== '.') {
             globPattern = base;
         }
-        return Finder.create().path(dir).glob(globPattern).find();
+        return Finder.create().path(dir || '.').glob(globPattern).find();
     }
 
     /**

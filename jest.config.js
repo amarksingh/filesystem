@@ -34,5 +34,9 @@ module.exports = {
         "<rootDir>/adapter/**/*.ts",
         "<rootDir>/clients/**/*.ts",
         "!<rootDir>/jest.config.js"
+    ],
+    "testPathIgnorePatterns": [
+        "/node_modules/",
+        "/build/"
     ]
 };
