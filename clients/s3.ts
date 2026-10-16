@@ -41,4 +41,4 @@ class S3Client {
     }
 }
 
-export = S3Client;
+export default S3Client;

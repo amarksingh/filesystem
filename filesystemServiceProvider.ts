@@ -73,4 +73,4 @@ class filesystemServiceProvider extends ServiceProvider {
     }
 }
 
-export = filesystemServiceProvider;
+export default filesystemServiceProvider;

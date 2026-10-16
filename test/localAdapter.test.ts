@@ -1,6 +1,6 @@
-const LocalAdapter = require("../adapter/local");
-const path = require("path");
-const fsExtra = require("fs-extra");
+import LocalAdapter from "../adapter/local";
+import path from "path";
+import fsExtra from "fs-extra";
 
 describe("LocalAdapter Unit Tests", () => {
     const tmpDir = path.join(__dirname, "tmp_local_adapter");

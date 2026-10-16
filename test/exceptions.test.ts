@@ -1,8 +1,8 @@
-const FileNotFoundException = require("../fileNotFoundException");
-const FileDeleteException = require("../fileDeleteException");
-const FileUploadException = require("../fileUploadException");
-const DirectoryCreateException = require("../directoryCreateException");
-const InvalidArgumentException = require("../invalidArgumentException");
+import FileNotFoundException from "../fileNotFoundException";
+import FileDeleteException from "../fileDeleteException";
+import FileUploadException from "../fileUploadException";
+import DirectoryCreateException from "../directoryCreateException";
+import InvalidArgumentException from "../invalidArgumentException";
 
 describe("Filesystem Exceptions Unit Tests", () => {
     test("FileNotFoundException has correct properties and status", () => {

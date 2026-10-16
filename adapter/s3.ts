@@ -105,4 +105,4 @@ class S3 extends CoreAdapter {
     }
 }
 
-export = S3;
+export default S3;

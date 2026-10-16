@@ -201,4 +201,4 @@ class Local extends CoreAdapter {
     }
 }
 
-export = Local;
+export default Local;

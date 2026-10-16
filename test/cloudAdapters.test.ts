@@ -1,5 +1,5 @@
-const S3Adapter = require("../adapter/s3");
-const AzureAdapter = require("../adapter/azure");
+import S3Adapter from "../adapter/s3";
+import AzureAdapter from "../adapter/azure";
 
 describe("Cloud Adapters (S3 and Azure) Unit Tests", () => {
     describe("S3Adapter", () => {

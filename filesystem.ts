@@ -506,4 +506,4 @@ class Filesystem extends FilesystemContract implements IFilesystem {
     }
 }
 
-export = Filesystem;
+export default Filesystem;

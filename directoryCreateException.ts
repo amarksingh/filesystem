@@ -24,4 +24,4 @@ class DirectoryCreateException extends DirectoryCreateExceptionContract {
     }
 }
 
-export = DirectoryCreateException;
+export default DirectoryCreateException;

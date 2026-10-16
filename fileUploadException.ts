@@ -24,4 +24,4 @@ class FileUploadException extends FileUploadExceptionContract {
     }
 }
 
-export = FileUploadException;
+export default FileUploadException;

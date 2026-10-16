@@ -107,4 +107,4 @@ class FilesystemHandler {
     }
 }
 
-export = FilesystemHandler;
+export default FilesystemHandler;

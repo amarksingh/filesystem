@@ -1,7 +1,7 @@
-const Filesystem = require("../filesystem");
-const path = require("path");
-const fsExtra = require("fs-extra");
-const FileNotFoundException = require("../fileNotFoundException");
+import Filesystem from "../filesystem";
+import path from "path";
+import fsExtra from "fs-extra";
+import FileNotFoundException from "../fileNotFoundException";
 
 describe("Filesystem Class Unit Tests", () => {
     const tmpDir = path.join(__dirname, "tmp_filesystem_test");
@@ -191,11 +191,10 @@ describe("Filesystem Class Unit Tests", () => {
         expect(await fs.ensureDirectoryExists(dir1)).toBe(true);
         expect(await fs.isDirectory(dir1)).toBe(true);
 
-        const fsExtra = require("fs-extra");
         const origEnsureDir = fsExtra.ensureDir;
-        fsExtra.ensureDir = jest.fn().mockRejectedValue(new Error("fail"));
+        (fsExtra as any).ensureDir = jest.fn().mockRejectedValue(new Error("fail"));
         expect(await fs.ensureDirectoryExists("/fail")).toBe(false);
-        fsExtra.ensureDir = origEnsureDir;
+        (fsExtra as any).ensureDir = origEnsureDir;
 
         const dir2 = path.join(tmpDir, "mkdir/deep");
         await fs.makeDirectory(dir2, 0o755, true);

@@ -169,4 +169,4 @@ class FileSystemManager extends Manager {
     }
 }
 
-export = FileSystemManager;
+export default FileSystemManager;

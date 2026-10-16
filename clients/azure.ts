@@ -52,4 +52,4 @@ class AzureClient {
     }
 }
 
-export = AzureClient;
+export default AzureClient;

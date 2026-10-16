@@ -196,4 +196,4 @@ class CoreAdapter {
     }
 }
 
-export = CoreAdapter;
+export default CoreAdapter;

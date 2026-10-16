@@ -1,8 +1,8 @@
-const FilesystemAdapter = require("../filesystemAdapter");
-const FileNotFoundException = require("../fileNotFoundException");
-const FileDeleteException = require("../fileDeleteException");
-const FileUploadException = require("../fileUploadException");
-const DirectoryCreateException = require("../directoryCreateException");
+import FilesystemAdapter from "../filesystemAdapter";
+import FileNotFoundException from "../fileNotFoundException";
+import FileDeleteException from "../fileDeleteException";
+import FileUploadException from "../fileUploadException";
+import DirectoryCreateException from "../directoryCreateException";
 
 describe("FilesystemAdapter Unit Tests", () => {
     let mockAdapter;

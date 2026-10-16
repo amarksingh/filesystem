@@ -173,4 +173,4 @@ class FilesystemAdapter {
     }
 }
 
-export = FilesystemAdapter;
+export default FilesystemAdapter;

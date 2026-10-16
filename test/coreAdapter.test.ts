@@ -1,5 +1,5 @@
-const CoreAdapter = require("../adapter/CoreAdapter");
-const path = require("path");
+import CoreAdapter from "../adapter/CoreAdapter";
+import path from "path";
 
 describe("CoreAdapter Unit Tests", () => {
     let adapter;

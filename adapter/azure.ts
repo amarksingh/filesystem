@@ -94,4 +94,4 @@ class Azure extends CoreAdapter {
     }
 }
 
-export = Azure;
+export default Azure;
