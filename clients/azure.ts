@@ -1,5 +1,3 @@
-import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
-
 const kContainer: unique symbol = Symbol('container');
 const kConnection: unique symbol = Symbol('connection');
 
@@ -30,6 +28,9 @@ class AzureClient {
      */
     getConnection(account?: string, key?: string): any {
         if (account || key) {
+            const azureBlob = require('@azure/storage-blob');
+            const BlobServiceClient = azureBlob.BlobServiceClient;
+            const StorageSharedKeyCredential = azureBlob.StorageSharedKeyCredential;
             return new BlobServiceClient(
                 `https://${account}.blob.core.windows.net`,
                 new StorageSharedKeyCredential(account!, key!)
