@@ -4,10 +4,10 @@ import DirectoryCreateExceptionContract from '@ostro/contracts/filesystem/direct
  * Class DirectoryCreateException.
  */
 class DirectoryCreateException extends DirectoryCreateExceptionContract {
-    name: string;
-    message: string;
-    errors: unknown;
-    statusCode: number;
+    public name: string;
+    public message: string;
+    public errors: unknown;
+    public statusCode: number;
 
     /**
      * Create a new instance.

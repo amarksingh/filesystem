@@ -30,7 +30,7 @@ class S3 extends CoreAdapter {
      * @param options - Read options.
      * @param callback - Completion callback.
      */
-    read($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public read($path: string, options: Record<string, any> = {}, callback: Function): void {
         const basePath: string = this.applyUrlPrefix();
         $path = $path.replaceAll('\\', '/');
         if ($path.charAt(0) == '/') {
@@ -69,7 +69,7 @@ class S3 extends CoreAdapter {
      * @param options - Upload options.
      * @param callback - Completion callback.
      */
-    write($path: string, data: any, options: Record<string, any> = {}, callback: Function): void {
+    public write($path: string, data: any, options: Record<string, any> = {}, callback: Function): void {
         $path = $path.replaceAll('\\', '/');
         if ($path.charAt(0) == '/') {
             $path = $path.substr(1);

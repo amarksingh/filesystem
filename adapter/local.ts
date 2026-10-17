@@ -32,7 +32,7 @@ class Local extends CoreAdapter {
      * @param callback - Optional completion callback.
      * @returns Promise if no callback, or void.
      */
-    move(path: string, newpath: any, callback?: Function): any {
+    public move(path: string, newpath: any, callback?: Function): any {
         if (callback) {
             return fs.move(path, newpath, {
                 overwrite: true
@@ -53,7 +53,7 @@ class Local extends CoreAdapter {
      * @param options - Deletion options.
      * @param callback - Completion callback.
      */
-    delete($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public delete($path: string, options: Record<string, any> = {}, callback: Function): void {
         const location: string = this.applyPathPrefix($path);
         fs.remove(location, (error) => {
             if (typeof this[kHandler].delete == 'function') {
@@ -77,7 +77,7 @@ class Local extends CoreAdapter {
      * @param options - Directory options.
      * @param callback - Completion callback.
      */
-    createDir($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public createDir($path: string, options: Record<string, any> = {}, callback: Function): void {
         const location: string = this.applyPathPrefix($path);
         fs.mkdir(location, { recursive: true }, (error) => {
             if (typeof this[kHandler].createDir == 'function') {
@@ -100,7 +100,7 @@ class Local extends CoreAdapter {
      * @param options - Access options.
      * @param callback - Result callback.
      */
-    has($path: string, options: { constants: keyof typeof fs.constants | string } = { constants: 'F_OK' }, callback: Function): void {
+    public has($path: string, options: { constants: keyof typeof fs.constants | string } = { constants: 'F_OK' }, callback: Function): void {
         const location: string = this.applyPathPrefix($path);
         fs.access(location, (fs.constants as any)[options.constants], (error) => {
             if (typeof this[kHandler].has == 'function') {
@@ -125,7 +125,7 @@ class Local extends CoreAdapter {
      * @param options - Write options.
      * @param rest - Extra arguments including callback.
      */
-    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]): void {
+    public write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]): void {
         const callback: Function = Array.from(rest).find(arg => typeof arg == 'function') as Function;
         const location: string = this.applyPathPrefix($path);
         fs.stat(location).then(res => {
@@ -166,7 +166,7 @@ class Local extends CoreAdapter {
      * @param options - Read options.
      * @param callback - Result callback.
      */
-    read($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public read($path: string, options: Record<string, any> = {}, callback: Function): void {
         const location: string = this.applyPathPrefix($path);
         fs.readFile(location, {
             encoding: (this.getConfig()?.encoding || (options.encoding || 'utf-8'))
@@ -197,7 +197,7 @@ class Local extends CoreAdapter {
      * @param options - Optional options.
      * @param callback - Optional callback.
      */
-    global($path?: string, options: Record<string, any> = {}, callback?: Function): void {
+    public global($path?: string, options: Record<string, any> = {}, callback?: Function): void {
     }
 }
 

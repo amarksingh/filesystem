@@ -10,7 +10,7 @@ class filesystemServiceProvider extends ServiceProvider {
     /**
      * register method.
      */
-    register(): void {
+    public register(): void {
         this.registerNativeFilesystem();
         this.registerFlysystem();
     }
@@ -18,7 +18,7 @@ class filesystemServiceProvider extends ServiceProvider {
     /**
      * registerNativeFilesystem method.
      */
-    registerNativeFilesystem(): void {
+    public registerNativeFilesystem(): void {
         this.$app.singleton('files', function(): Filesystem {
             return new Filesystem();
         });
@@ -27,7 +27,7 @@ class filesystemServiceProvider extends ServiceProvider {
     /**
      * registerFlysystem method.
      */
-    registerFlysystem(): void {
+    public registerFlysystem(): void {
         this.registerManager();
 
         this.$app.singleton('filesystem.disk', ($app: any): any => {
@@ -42,7 +42,7 @@ class filesystemServiceProvider extends ServiceProvider {
     /**
      * registerManager method.
      */
-    registerManager(): void {
+    public registerManager(): void {
         this.$app.singleton('filesystem', function($app: any): FilesystemManager {
             return new FilesystemManager($app);
         });
@@ -53,7 +53,7 @@ class filesystemServiceProvider extends ServiceProvider {
      *
      * @returns Default driver name.
      */
-    getDefaultDriver(): string {
+    public getDefaultDriver(): string {
         return this.$app['config']['filesystems.default'];
     }
 
@@ -62,14 +62,14 @@ class filesystemServiceProvider extends ServiceProvider {
      *
      * @returns Cloud driver name.
      */
-    getCloudDriver(): string {
+    public getCloudDriver(): string {
         return this.$app['config']['filesystems.cloud'];
     }
 
     /**
      * boot method.
      */
-    boot(): void {
+    public boot(): void {
     }
 }
 

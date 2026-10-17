@@ -30,7 +30,7 @@ class Azure extends CoreAdapter {
      * @param options - Read options.
      * @param callback - Completion callback.
      */
-    read($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public read($path: string, options: Record<string, any> = {}, callback: Function): void {
         const basePath: string = this.applyUrlPrefix();
         this[kClient].getContainer(options.container).getBlockBlobClient($path).downloadToBuffer()
             .then((data: any) => ({ error: null, data: data }))
@@ -65,7 +65,7 @@ class Azure extends CoreAdapter {
      * @param options - Upload options.
      * @param callback - Completion callback.
      */
-    write($path: string, data: any, options: Record<string, any> = {}, callback: Function): void {
+    public write($path: string, data: any, options: Record<string, any> = {}, callback: Function): void {
         const basePath: string = this.applyUrlPrefix();
         this[kClient].getContainer(options.container).getBlockBlobClient($path).upload(data, data.length)
             .then((response: any) => ({ error: null, response }))

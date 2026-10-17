@@ -26,7 +26,7 @@ class AzureClient {
      * @param key - Storage account key.
      * @returns BlobServiceClient instance or existing connection.
      */
-    getConnection(account?: string, key?: string): any {
+    public getConnection(account?: string, key?: string): any {
         if (account || key) {
             const azureBlob = require('@azure/storage-blob');
             const BlobServiceClient = azureBlob.BlobServiceClient;
@@ -45,7 +45,7 @@ class AzureClient {
      * @param container - Container name.
      * @returns ContainerClient instance or default container.
      */
-    getContainer(container?: string): any {
+    public getContainer(container?: string): any {
         if (container) {
             return this[kConnection].getContainerClient(container);
         }

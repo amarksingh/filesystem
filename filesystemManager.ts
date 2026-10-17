@@ -16,7 +16,7 @@ const kHandler: unique symbol = Symbol('handler');
  * Class FileSystemManager.
  */
 class FileSystemManager extends Manager {
-    $type: string = 'filesystem';
+    public $type: string = 'filesystem';
     [kHandler]: any;
 
     /**
@@ -49,7 +49,7 @@ class FileSystemManager extends Manager {
      * @param $name - Driver or disk name.
      * @returns FilesystemAdapter instance.
      */
-    drive($name: string | null = null): any {
+    public drive($name: string | null = null): any {
         return this.driver($name);
     }
 
@@ -59,7 +59,7 @@ class FileSystemManager extends Manager {
      * @param name - Disk name.
      * @returns FilesystemAdapter instance.
      */
-    disk(name: string | null = null): any {
+    public disk(name: string | null = null): any {
         return this.driver(name);
     }
 
@@ -68,7 +68,7 @@ class FileSystemManager extends Manager {
      *
      * @returns Default cloud FilesystemAdapter instance.
      */
-    cloud(): any {
+    public cloud(): any {
         const name = this.getDefaultCloudDriver();
         return this.disk(name);
     }
@@ -79,7 +79,7 @@ class FileSystemManager extends Manager {
      * @param $name - Disk name to resolve.
      * @returns Resolved FilesystemAdapter instance.
      */
-    resolve($name: string): any {
+    public resolve($name: string): any {
         const $config = this.getConfig($name);
         if (!$config) {
             throw new InvalidArgumentException("Disk [" + $name + "] was not available.");
@@ -93,7 +93,7 @@ class FileSystemManager extends Manager {
      * @param $config - Driver configuration.
      * @returns FilesystemAdapter for local storage.
      */
-    createLocalDriver($config: Record<string, any>): FilesystemAdapter {
+    public createLocalDriver($config: Record<string, any>): FilesystemAdapter {
         return this.adapt(new LocalAdapter($config['root'], $config), $config);
     }
 
@@ -103,7 +103,7 @@ class FileSystemManager extends Manager {
      * @param $config - Driver configuration.
      * @returns FilesystemAdapter for Azure storage.
      */
-    createAzureDriver($config: Record<string, any>): FilesystemAdapter {
+    public createAzureDriver($config: Record<string, any>): FilesystemAdapter {
         return this.adapt(new AzureAdapter(new AzureClient($config), $config), $config);
     }
 
@@ -113,7 +113,7 @@ class FileSystemManager extends Manager {
      * @param $config - Driver configuration.
      * @returns FilesystemAdapter for S3 storage.
      */
-    createS3Driver($config: Record<string, any>): FilesystemAdapter {
+    public createS3Driver($config: Record<string, any>): FilesystemAdapter {
         return this.adapt(new S3Adapter(new S3Client($config), $config), $config);
     }
 
@@ -124,7 +124,7 @@ class FileSystemManager extends Manager {
      * @param config - Driver configuration.
      * @returns FilesystemAdapter wrapping core adapter.
      */
-    adapt(adapter: any, config: Record<string, any>): FilesystemAdapter {
+    public adapt(adapter: any, config: Record<string, any>): FilesystemAdapter {
         return new FilesystemAdapter(adapter, this[kHandler]);
     }
 
@@ -134,7 +134,7 @@ class FileSystemManager extends Manager {
      * @param name - Disk configuration key.
      * @returns Configuration object.
      */
-    getConfig(name: string): any {
+    public getConfig(name: string): any {
         return super.getConfig(`disks.${name}`) || super.getConfig(name);
     }
 
@@ -143,7 +143,7 @@ class FileSystemManager extends Manager {
      *
      * @returns Name of default cloud driver.
      */
-    getDefaultCloudDriver(): string {
+    public getDefaultCloudDriver(): string {
         return super.getConfig('cloud');
     }
 
@@ -152,7 +152,7 @@ class FileSystemManager extends Manager {
      *
      * @param FileRequest - Request constructor to extend.
      */
-    registerToRequest(FileRequest: any): void {
+    public registerToRequest(FileRequest: any): void {
         const self = this;
         FileRequest.prototype.store = function(dir?: string, disk?: any, options?: any) {
             dir = dir || '';

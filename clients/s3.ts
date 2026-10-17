@@ -21,7 +21,7 @@ class S3Client {
      *
      * @returns S3 instance.
      */
-    getConnection(): any {
+    public getConnection(): any {
         return this[kConnection];
     }
 
@@ -30,7 +30,7 @@ class S3Client {
      *
      * @param $config - S3 connection options.
      */
-    applyConnection($config: Record<string, any>): void {
+    public applyConnection($config: Record<string, any>): void {
         const awsSdk = require('aws-sdk');
         const S3 = awsSdk.S3;
         this[kConnection] = new S3({

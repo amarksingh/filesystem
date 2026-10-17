@@ -19,7 +19,7 @@ class CoreAdapter {
      *
      * @param config - Configuration object.
      */
-    setConfig(config: Record<string, any>): void {
+    public setConfig(config: Record<string, any>): void {
         this[kConfig] = config;
     }
 
@@ -28,7 +28,7 @@ class CoreAdapter {
      *
      * @returns Configuration object or null.
      */
-    getConfig(): Record<string, any> | null {
+    public getConfig(): Record<string, any> | null {
         return this[kConfig] || null;
     }
 
@@ -37,7 +37,7 @@ class CoreAdapter {
      *
      * @param root - Root directory path prefix.
      */
-    setPathPrefix(root: string): void {
+    public setPathPrefix(root: string): void {
         this[kRootPath] = root;
     }
 
@@ -46,7 +46,7 @@ class CoreAdapter {
      *
      * @param root - Root URL prefix.
      */
-    setUrlPrefix(root: string): void {
+    public setUrlPrefix(root: string): void {
         this[kRootUrlPath] = root;
     }
 
@@ -56,7 +56,7 @@ class CoreAdapter {
      * @param dest - Target path.
      * @returns Resolved absolute path.
      */
-    applyPathPrefix(dest: string): string {
+    public applyPathPrefix(dest: string): string {
         return path.resolve(path.join(this[kRootPath], path.join('/', path.normalize(dest))));
     }
 
@@ -66,7 +66,7 @@ class CoreAdapter {
      * @param dest - Target path or URL segment.
      * @returns Resolved URL string.
      */
-    applyUrlPrefix(dest?: string): string {
+    public applyUrlPrefix(dest?: string): string {
         return url.resolve(([this[kRootUrlPath], (dest || '')].join('/')), '');
     }
 
@@ -86,7 +86,7 @@ class CoreAdapter {
      * @param dest - Path to parse.
      * @returns Parsed path object.
      */
-    parsePath(dest: string): path.ParsedPath {
+    public parsePath(dest: string): path.ParsedPath {
         return path.parse(dest);
     }
 
@@ -96,7 +96,7 @@ class CoreAdapter {
      * @param dest - Path to get directory name of.
      * @returns Directory path.
      */
-    dirname(dest: string): string {
+    public dirname(dest: string): string {
         return this.parsePath(dest).dir;
     }
 
@@ -106,7 +106,7 @@ class CoreAdapter {
      * @param content - Content or array of contents.
      * @returns Single content element.
      */
-    getContent<T = unknown>(content: T | T[]): T {
+    public getContent<T = unknown>(content: T | T[]): T {
         if (Array.isArray(content)) {
             return content[0];
         } else {
@@ -120,7 +120,7 @@ class CoreAdapter {
      * @param content - Content containing buffer.
      * @returns Buffer instance.
      */
-    getBufferData(content: any): any {
+    public getBufferData(content: any): any {
         return this.getContent(content).buffer;
     }
 
@@ -131,7 +131,7 @@ class CoreAdapter {
      * @param newpath - Destination path.
      * @param callback - Result callback.
      */
-    move(path: string, newpath: any, callback: Function): void {
+    public move(path: string, newpath: any, callback: Function): void {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
@@ -142,7 +142,7 @@ class CoreAdapter {
      * @param options - Deletion options.
      * @param callback - Result callback.
      */
-    delete($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public delete($path: string, options: Record<string, any> = {}, callback: Function): void {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
@@ -153,7 +153,7 @@ class CoreAdapter {
      * @param options - Check options.
      * @param callback - Result callback.
      */
-    has($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public has($path: string, options: Record<string, any> = {}, callback: Function): void {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
@@ -165,7 +165,7 @@ class CoreAdapter {
      * @param options - Write options.
      * @param rest - Additional arguments including callback.
      */
-    write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]): void {
+    public write($path: string, $contents: any, options: Record<string, any> = {}, ...rest: any[]): void {
         const callback: Function = Array.from(rest).find(arg => typeof arg == 'function') || (typeof options == 'function' ? options : () => {});
         callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
@@ -177,7 +177,7 @@ class CoreAdapter {
      * @param options - Read options.
      * @param callback - Result callback.
      */
-    read($path: string, options: Record<string, any> = {}, callback: Function): void {
+    public read($path: string, options: Record<string, any> = {}, callback: Function): void {
         callback(this.formatError({ message: 'there was no such functionality available.' }), {});
     }
 
@@ -187,7 +187,7 @@ class CoreAdapter {
      * @param err - Inner error.
      * @returns Formatted error object.
      */
-    formatError(err: unknown): { message: string; errors: unknown; status: number } {
+    public formatError(err: unknown): { message: string; errors: unknown; status: number } {
         return {
             'message': 'Storage Error',
             'errors': err,
