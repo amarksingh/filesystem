@@ -14,8 +14,8 @@ jest.mock("@azure/storage-blob", () => ({
     StorageSharedKeyCredential: mockStorageSharedKeyCredential
 }), { virtual: true });
 
-import S3Client from "../clients/s3";
-import AzureClient from "../clients/azure";
+import S3Client from "../src/clients/s3";
+import AzureClient from "../src/clients/azure";
 
 describe("Filesystem Clients Unit Tests", () => {
     describe("S3Client", () => {

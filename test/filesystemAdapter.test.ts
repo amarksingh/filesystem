@@ -1,8 +1,8 @@
-import FilesystemAdapter from "../filesystemAdapter";
-import FileNotFoundException from "../fileNotFoundException";
-import FileDeleteException from "../fileDeleteException";
-import FileUploadException from "../fileUploadException";
-import DirectoryCreateException from "../directoryCreateException";
+import FilesystemAdapter from "../src/filesystemAdapter";
+import FileNotFoundException from "../src/fileNotFoundException";
+import FileDeleteException from "../src/fileDeleteException";
+import FileUploadException from "../src/fileUploadException";
+import DirectoryCreateException from "../src/directoryCreateException";
 
 describe("FilesystemAdapter Unit Tests", () => {
     let mockAdapter;

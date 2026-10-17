@@ -1,4 +1,4 @@
-import LocalAdapter from "../adapter/local";
+import LocalAdapter from "../src/adapter/local";
 import path from "path";
 import fsExtra from "fs-extra";
 

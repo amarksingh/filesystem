@@ -1,8 +1,8 @@
-import FileNotFoundException from "../fileNotFoundException";
-import FileDeleteException from "../fileDeleteException";
-import FileUploadException from "../fileUploadException";
-import DirectoryCreateException from "../directoryCreateException";
-import InvalidArgumentException from "../invalidArgumentException";
+import FileNotFoundException from "../src/fileNotFoundException";
+import FileDeleteException from "../src/fileDeleteException";
+import FileUploadException from "../src/fileUploadException";
+import DirectoryCreateException from "../src/directoryCreateException";
+import InvalidArgumentException from "../src/invalidArgumentException";
 
 describe("Filesystem Exceptions Unit Tests", () => {
     test("FileNotFoundException has correct properties and status", () => {

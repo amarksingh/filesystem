@@ -1,7 +1,7 @@
-import Filesystem from "../filesystem";
+import Filesystem from "../src/filesystem";
 import path from "path";
 import fsExtra from "fs-extra";
-import FileNotFoundException from "../fileNotFoundException";
+import FileNotFoundException from "../src/fileNotFoundException";
 
 describe("Filesystem Class Unit Tests", () => {
     const tmpDir = path.join(__dirname, "tmp_filesystem_test");

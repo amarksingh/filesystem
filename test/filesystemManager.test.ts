@@ -9,9 +9,9 @@ jest.mock("@azure/storage-blob", () => ({
     StorageSharedKeyCredential: jest.fn()
 }), { virtual: true });
 
-import FilesystemManager from "../filesystemManager";
-import FilesystemServiceProvider from "../filesystemServiceProvider";
-import Filesystem from "../filesystem";
+import FilesystemManager from "../src/filesystemManager";
+import FilesystemServiceProvider from "../src/filesystemServiceProvider";
+import Filesystem from "../src/filesystem";
 import path from "path";
 
 describe("FilesystemManager and ServiceProvider Unit Tests", () => {

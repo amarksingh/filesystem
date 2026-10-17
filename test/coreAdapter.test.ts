@@ -1,4 +1,4 @@
-import CoreAdapter from "../adapter/CoreAdapter";
+import CoreAdapter from "../src/adapter/CoreAdapter";
 import path from "path";
 
 describe("CoreAdapter Unit Tests", () => {

@@ -1,4 +1,4 @@
-import FilesystemHandler from "../callbackHandler";
+import FilesystemHandler from "../src/callbackHandler";
 
 describe("FilesystemHandler Unit Tests", () => {
     let handler: FilesystemHandler;

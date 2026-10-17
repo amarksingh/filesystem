@@ -1,6 +1,6 @@
 const tsJestPath = "/Users/amarkumarsingh/.nvm/versions/node/v24.12.0/lib/node_modules/ts-jest";
 
-module.exports = {
+export default {
     "testEnvironment": "node",
     "testMatch": [
         "**/test/**/*.test.ts",
@@ -15,12 +15,12 @@ module.exports = {
         ]
     },
     "moduleNameMapper": {
-        "^@ostro/support/(.*)$": "<rootDir>/../support/$1",
-        "^@ostro/support$": "<rootDir>/../support",
-        "^@ostro/contracts/(.*)$": "<rootDir>/../contracts/$1",
-        "^@ostro/contracts$": "<rootDir>/../contracts",
-        "^@ostro/filesystem/(.*)$": "<rootDir>/$1",
-        "^@ostro/filesystem$": "<rootDir>/filesystemManager"
+        "^@ostro/support/(.*)$": "<rootDir>/../support/src/$1",
+        "^@ostro/support$": "<rootDir>/../support/src",
+        "^@ostro/contracts/(.*)$": "<rootDir>/../contracts/src/$1",
+        "^@ostro/contracts$": "<rootDir>/../contracts/src",
+        "^@ostro/filesystem/(.*)$": "<rootDir>/src/$1",
+        "^@ostro/filesystem$": "<rootDir>/src/filesystemManager"
     },
     "collectCoverage": true,
     "coverageDirectory": "coverage",
@@ -30,10 +30,7 @@ module.exports = {
         "clover"
     ],
     "collectCoverageFrom": [
-        "<rootDir>/*.ts",
-        "<rootDir>/adapter/**/*.ts",
-        "<rootDir>/clients/**/*.ts",
-        "!<rootDir>/jest.config.js"
+        "<rootDir>/src/**/*.ts"
     ],
     "testPathIgnorePatterns": [
         "/node_modules/",
