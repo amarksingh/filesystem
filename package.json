@@ -1,6 +1,6 @@
 {
   "name": "@ostro/filesystem",
-  "version": "1.0.4",
+  "version": "2.0.0-alpha.1",
   "description": "filesystem module for OstroJS",
   "main": "build/filesystemManager.js",
   "types": "build/filesystemManager.d.ts",
@@ -23,8 +23,8 @@
     "test": "npx c8 npx jest"
   },
   "dependencies": {
-    "@ostro/support": "^1.0.11",
-    "@ostro/contracts": "^1.0.2",
+    "@ostro/support": "^2.0.0-alpha.1",
+    "@ostro/contracts": "^2.0.0-alpha.1",
     "fs-extra": "^10.0.0",
     "lodash.get": "^4.4.2",
     "filehound": "^1.17.4",
